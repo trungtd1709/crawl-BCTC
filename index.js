@@ -1,6 +1,7 @@
 import express from 'express';
-import { crawlData } from './services/crawl.js';
+
 import dotenv from "dotenv";
+import { crawlData } from './src/services/crawl.js';
 dotenv.config();
 
 const app = express();
