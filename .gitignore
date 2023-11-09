@@ -1,0 +1,14 @@
+node_modules/
+.env
+uploads/
+.vscode
+public/*/
+storage/*/
+body-test.json
+
+.gitlab-ci.yml
+yarn.lock
+
+**/*.log
+
+*.sh

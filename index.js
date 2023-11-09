@@ -1,16 +1,16 @@
-import express from 'express';
+import express from "express";
 
 import dotenv from "dotenv";
-import { crawlData } from './src/services/crawl.js';
+import { crawlData } from "./src/services/crawl.js";
 dotenv.config();
 
 const app = express();
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+app.get("/", async (req, res) => {
+  res.send("Hello World!");
 });
 
-crawlData();
+await crawlData();
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
