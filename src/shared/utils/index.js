@@ -20,3 +20,9 @@ export const now = () => {
   let today = dayjs();
   return today.format("YYYY-MM-DD HH:mm:ss").toString();
 };
+
+export const stringToFloat = (str) => {
+  // let str = "1,900,500.05";
+  let number = parseFloat(str.replace(/,/g, ""));
+  return number;
+};

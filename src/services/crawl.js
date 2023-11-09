@@ -28,6 +28,7 @@ export const crawlData = async () => {
 
   try {
     await driver.get(urlToCrawl);
+    await waitPageLoad(driver);
     let rowIndex = 0;
     // await changeDateRange(driver, "10/10/2023", "05/11/2023");
     while (rowIndex < 2) {
