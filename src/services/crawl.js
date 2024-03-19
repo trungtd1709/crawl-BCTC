@@ -15,10 +15,17 @@ import {
 } from "../shared/constant.js";
 
 const waitPageLoad = async (driver) => {
-  await driver.wait(async function () {
-    const readyState = await driver.executeScript("return document.readyState");
-    return readyState === "complete";
-  }, 10000);
+  try {
+    await driver.wait(async function () {
+      const readyState = await driver.executeScript(
+        "return document.readyState"
+      );
+      return readyState === "complete";
+    }, 10000);
+  } catch (error) {
+    console.error(now() + `[Web cannot load]: ${error}.`);
+    console.error(error);
+  }
 };
 
 export const crawlData = async () => {
@@ -61,7 +68,7 @@ export const crawlData = async () => {
       rowIndex++;
     }
   } catch (error) {
-    console.error(now() + "[Error]:" + error);
+    console.error(now() + "[Error]:" + error.message);
   } finally {
     await driver.quit();
   }
@@ -76,19 +83,8 @@ const navigateToReportDetail = async (anchorContainerEl) => {
 // Khi đã vào trang chi tiết gọi hàm này bắt đầu lấy dữ liệu
 const startCrawl = async (driver) => {
   try {
-    const companyNameTableEl = await driver.findElement(
-      By.id(companyNameTableId)
-    );
-    const companyNameEls = await companyNameTableEl.findElements(By.css("td"));
-    const companyName = await companyNameEls[1].getText();
-
-    const reportNameTableEl = await driver.findElement(
-      By.id(reportNameTableId)
-    );
-    const reportNameEls = await reportNameTableEl.findElements(By.css("td"));
-    const reportName = await reportNameEls[1].getText();
-    console.log(
-      now() + ": Start crawling !!!" + " " + companyName + " " + reportName
+    const { businessCode, companyName, reportName } = await getBusinessInfo(
+      driver
     );
     let tableOrder = 1;
     let crawlData = [];
@@ -100,6 +96,7 @@ const startCrawl = async (driver) => {
     tableOrder++;
 
     // Có 3 nút cần bấm để chuyển tab
+    
     while (tableOrder < 5) {
       await changeTab(driver, tableOrder);
       tableData = await getTableData(driver, tableOrder);
@@ -108,9 +105,16 @@ const startCrawl = async (driver) => {
       tableOrder++;
     }
     console.log(
-      now() + "[CRAWL SUCCESS]:" + " " + companyName + " " + reportName
+      now() +
+        "[CRAWL SUCCESS]:" +
+        " " +
+        businessCode +
+        " " +
+        companyName +
+        " " +
+        reportName
     );
-    console.log(now() + "[crawlData]:", crawlData);
+    console.log(now() + "[crawledData]:", crawlData);
     return;
   } catch (err) {
     console.log(now() + " - [ERROR] crawl fail!!!" + err);
@@ -125,6 +129,34 @@ const getTableData = async (driver, tableOrder) => {
   const rowsDataEl = await tableEl.findElements(By.css("tr"));
   const tableData = await getDetailTableData(rowsDataEl);
   return tableData;
+};
+
+const getBusinessInfo = async (driver) => {
+  const companyNameTableEl = await driver.findElement(
+    By.id(companyNameTableId)
+  );
+  const companyNameEls = await companyNameTableEl.findElements(By.css("td"));
+  const companyName = await companyNameEls[1].getText();
+
+  const reportNameTableEl = await driver.findElement(By.id(reportNameTableId));
+  const reportNameEls = await reportNameTableEl.findElements(By.css("td"));
+  const reportName = await reportNameEls[1].getText();
+
+  const headerEls = await driver.findElements(By.css(".xth.xtk"));
+  const businessCodeContainerEl = headerEls[0];
+  const businessCode = await businessCodeContainerEl.getText();
+
+  console.log(
+    now() +
+      ": [Start crawling !!!]" +
+      `Mã doanh nghiệp: ${businessCode}` +
+      " " +
+      `Tên công ty: ${companyName}` +
+      " " +
+      `Tiêu đề: ${reportName}`
+  );
+
+  return { companyName, reportName, businessCode };
 };
 
 async function waitForElementVisibleById(driver, elId) {

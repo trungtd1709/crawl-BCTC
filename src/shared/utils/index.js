@@ -1,4 +1,13 @@
 import dayjs from "dayjs";
+import {
+  firstTableId,
+  fourthTableId,
+  idButtonChangeTab2,
+  idButtonChangeTab3,
+  idButtonChangeTab4,
+  secondTableId,
+  thirdTableId,
+} from "../constant.js";
 
 export const delay = (seconds) => {
   return new Promise((resolve) => {
@@ -7,12 +16,46 @@ export const delay = (seconds) => {
 };
 
 export const getTableId = (order) => {
-  const tableId = `pt2:tab${order}::body`;
+  let tableId;
+  switch (order) {
+    case 1:
+      tableId = firstTableId;
+      break;
+    case 2:
+      tableId = secondTableId;
+      break;
+    case 3:
+      tableId = thirdTableId;
+      break;
+    case 4:
+      tableId = fourthTableId;
+      break;
+    default:
+    // code block
+  }
+  // const tableId = `pt2:tab${order}::body`;
   return tableId;
 };
 
 export const getButtonChangeTabId = (order) => {
-  const buttonId = `pt2:tab${order}::ti`;
+  let buttonId;
+  switch (order) {
+    // case 1:
+    //   tableId = firstTableId;
+    //   break;
+    case 2:
+      buttonId = idButtonChangeTab2;
+      break;
+    case 3:
+      buttonId = idButtonChangeTab3;
+      break;
+    case 4:
+      buttonId = idButtonChangeTab4;
+      break;
+    default:
+    // code block
+  }
+  // const buttonId = `pt2:tab${order}::ti`;
   return buttonId;
 };
 
