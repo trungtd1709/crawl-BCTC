@@ -8,7 +8,8 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
   port: dbConfig.PORT,
   dialect: dbConfig.dialect,
-  operatorsAliases: false,
+  // operatorsAliases: false,
+  logging: console.log,
   pool: {
     max: dbConfig.pool.max,
     min: dbConfig.pool.min,
@@ -229,6 +230,21 @@ db.FavouriteCourse = require("./favourite-course.model.js")(sequelize);
 db.FavouriteArticle = require("./favourite-article.model.js")(sequelize);
 
 db.FavouriteFilterLine = require("./favourite-filterLine.model.js")(sequelize);
+
+/**
+ * @type {Sequelize.ModelStatic<Sequelize.Model>}
+ */
+db.ReportComponentType = require("./report-component-type.modal.js")(sequelize);
+
+/**
+ * @type {Sequelize.ModelStatic<Sequelize.Model>}
+ */
+db.ReportComponent = require("./report-component.model.js")(sequelize);
+
+/**
+ * @type {Sequelize.ModelStatic<Sequelize.Model>}
+ */
+db.ReportTemplate = require("./report-template.model.js")(sequelize);
 
 // chien: dinh nghia cac association
 db.categories.hasMany(db.Video, { foreignKey: "categoryId" });
@@ -458,6 +474,21 @@ db.account.hasMany(db.FavouriteArticle, { foreignKey: "accountId" });
 
 db.FavouriteFilterLine.belongsTo(db.account, { foreignKey: "accountId" });
 db.account.hasMany(db.FavouriteFilterLine, { foreignKey: "accountId" });
+
+db.ReportTemplate.hasMany(db.ReportComponent, {
+  foreignKey: "reportTemplateId",  onDelete: "CASCADE",
+});
+db.ReportComponent.belongsTo(db.ReportTemplate, {
+  foreignKey: "reportComponentId",
+  onDelete: "CASCADE",
+});
+
+db.ReportComponentType.hasMany(db.ReportComponent, {
+  foreignKey: "reportComponentTypeId",
+});
+db.ReportComponent.belongsTo(db.ReportComponentType, {
+  foreignKey: "reportComponentTypeId",
+});
 
 db.OflineDate = require("./offlineDate.model.js")(sequelize, Sequelize);
 

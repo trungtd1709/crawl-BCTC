@@ -1,5 +1,4 @@
-import dayjs from "dayjs";
-import {
+const {
   firstTableId,
   fourthTableId,
   idButtonChangeTab2,
@@ -7,7 +6,9 @@ import {
   idButtonChangeTab4,
   secondTableId,
   thirdTableId,
-} from "../constant.js";
+} = require("../constant.js");
+
+const dayjs = require("dayjs");
 
 export const delay = (seconds) => {
   return new Promise((resolve) => {

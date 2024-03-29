@@ -1,18 +1,17 @@
-import { Builder, By, Key, until } from "selenium-webdriver";
-import {
+const { Builder, By, Key, until } = require("selenium-webdriver");
+const {
   delay,
   getButtonChangeTabId,
   getTableId,
-  now,
-} from "../src/shared/utils/index.js";
-import {
-  buttonSearchId,
+  now
+} = require("../shared/utils/index.js");
+const {
   companyNameTableId,
   endDateInputId,
   paginationInputId,
   reportNameTableId,
   startDateInputId,
-} from "../src/shared/constant.js";
+} = require("../shared/constant.js");
 
 const waitPageLoad = async (driver) => {
   try {
@@ -96,7 +95,7 @@ const startCrawl = async (driver) => {
     tableOrder++;
 
     // Có 3 nút cần bấm để chuyển tab
-    
+
     while (tableOrder < 5) {
       await changeTab(driver, tableOrder);
       tableData = await getTableData(driver, tableOrder);

@@ -1,11 +1,7 @@
 require("dotenv").config();
+const { inserReportXLSX } = require("./import_xlsx");
 const db = require("./models");
-
-console.log("process.env.DB_HOST", process.env.DB_HOST);
-console.log("process.env.DB_USER", process.env.DB_USER);
-console.log("process.env.DB_PASSWORD", process.env.DB_PASSWORD);
-console.log("process.env.DB_DIALECT", process.env.DB_DIALECT);
-
+const { connectDB, syncDB } = require("./services/database");
 
 // const app = express();
 
@@ -18,11 +14,11 @@ console.log("process.env.DB_DIALECT", process.env.DB_DIALECT);
 //   console.log(`Server running on port ${PORT}`);
 // });
 
-try {
-  db.sequelize.authenticate();
-  console.log("Connection has been established successfully.");
-} catch (error) {
-  console.error("Unable to connect to the database:", error);
-}
+const start = async () => {
+  connectDB();
+  //   await syncDB();
+  await inserReportXLSX();
+};
 
+start();
 // await crawlData();
