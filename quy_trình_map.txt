@@ -1,0 +1,11 @@
+
+ReportComponentTypeID sẽ có 4 loại này tương ứng: BCDKT, KQKD, LCTT-TT, LCTT-TT
+ReportTemplateID sẽ có 4 loại cty: CT cổ phần, bảo hiểm, chứng khoán, ngân hàng
+ReportComponentID là kết hợp của 2 chú trên
+
+NormID là chỉ tiêu trong báo cáo tài chính, nhưng cùng 1 tên gọi Tổng tài sản thì có
+ thể có 2 NormID khác nhau, do nó ứng với 2 cty khác nhau
+
+Mã doanh nghiệp = Company.businessPermit
+
+--> find Company --> Company.stockCode (ex: HPG)

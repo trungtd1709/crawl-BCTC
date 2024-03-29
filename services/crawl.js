@@ -4,7 +4,7 @@ import {
   getButtonChangeTabId,
   getTableId,
   now,
-} from "../shared/utils/index.js";
+} from "../src/shared/utils/index.js";
 import {
   buttonSearchId,
   companyNameTableId,
@@ -12,7 +12,7 @@ import {
   paginationInputId,
   reportNameTableId,
   startDateInputId,
-} from "../shared/constant.js";
+} from "../src/shared/constant.js";
 
 const waitPageLoad = async (driver) => {
   try {
