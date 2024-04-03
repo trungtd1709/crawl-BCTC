@@ -3,15 +3,6 @@ const db = require("../models");
 
 const filePath = "./Crawl_MoneyGain.xlsx";
 
-const workbook = XLSX.readFile(filePath);
-
-const reportComponentTypeSheetName = workbook.SheetNames[2];
-const reportComponentSheetName = workbook.SheetNames[3];
-
-const reportComponentTypeWorksheet =
-  workbook.Sheets[reportComponentTypeSheetName];
-const reportComponentWorksheet = workbook.Sheets[reportComponentSheetName];
-
 const getJsonData = (sheetIndex) => {
   try {
     const workbook = XLSX.readFile(filePath);
@@ -34,52 +25,42 @@ const getJsonData = (sheetIndex) => {
 };
 
 const insertReportTemplate = async () => {
+  const t = await db.sequelize.transaction();
   try {
-    //   const reportTemplateSheetName = workbook.SheetNames[1];
-    //   const reportTemplateWorksheet = workbook.Sheets[reportTemplateSheetName];
-    //   const jsonReportTemplate = XLSX.utils.sheet_to_json(reportTemplateWorksheet);
     const jsonReportTemplate = getJsonData(1);
-
     await db.ReportTemplate.bulkCreate(jsonReportTemplate, {
       updateOnDuplicate: ["businessTypeId", "templateName", "lastUpdate"],
+      transaction: t,
     });
+    await t.commit();
     console.log("[INSERT REPORT TEMPLATE SUCCESS]");
   } catch (err) {
+    await t.rollback();
     console.log("[ERR insert report template]:", err);
   }
 };
 
-// const insertReportTemplate = async () => {
-//   try {
-//     const jsonData = getJsonData(1);
-//     console.log(jsonData);
-//     const result = await db.ReportTemplate.bulkCreate(jsonData, {
-//       updateOnDuplicate: ["businessTypeId", "templateName", "lastUpdate"],
-//       validate: true,
-//     });
-//     // const result = await db.ReportTemplate.create(jsonData[0]);
-//     console.log(result);
-//     console.log("[INSERT REPORT TEMPLATE SUCCESS]");
-//   } catch (err) {
-//     console.log("[ERR insert report template]:", err);
-//   }
-// };
-
 const insertReportComponentType = async () => {
   const jsonData = getJsonData(2);
+  const t = await db.sequelize.transaction();
   try {
     await db.ReportComponentType.bulkCreate(jsonData, {
       updateOnDuplicate: ["code", "name", "nameEn"],
+      transaction: t,
     });
+    await t.commit();
     console.log("[INSERT REPORT COMPONENT TYPE SUCCESS]");
   } catch (err) {
+    await t.rollback();
     console.log("[ERR INSERT REPORT COMPONENT TYPE]:", err);
   }
 };
 
 const insertReportComponent = async () => {
   const jsonData = getJsonData(3);
+  const t = await db.sequelize.transaction();
   try {
+    // const newReportComponent = await db.ReportComponent.create(jsonData[0]);
     await db.ReportComponent.bulkCreate(jsonData, {
       updateOnDuplicate: [
         "reportComponentTypeId",
@@ -87,21 +68,73 @@ const insertReportComponent = async () => {
         "code",
         "ordering",
       ],
+      transaction: t,
     });
+
+    await t.commit();
     console.log("[INSERT REPORT COMPONENT SUCCESS]");
   } catch (err) {
+    await t.rollback();
     console.log("[ERR INSERT REPORT COMPONENT]:", err);
   }
 };
 
+const insertReportNorm = async () => {
+  const jsonData = getJsonData(4);
+  const t = await db.sequelize.transaction();
+  try {
+    // const newReportComponent = await db.ReportComponent.create(jsonData[0]);
+    await db.ReportNorm.bulkCreate(jsonData, {
+      updateOnDuplicate: [
+        "normId",
+        "parentReportNormId",
+        "reportComponentId",
+        "cssStyleId",
+        "paddingStyleId",
+        "publishNormCode",
+        "ordering",
+        "name",
+        "nameEn",
+      ],
+      transaction: t,
+    });
+
+    await t.commit();
+    console.log("[INSERT REPORT COMPONENT SUCCESS]");
+  } catch (err) {
+    await t.rollback();
+    console.log("[ERR INSERT REPORT COMPONENT]:", err);
+  }
+};
+
+const insertBusinessTypeIdToCompany = async () => {
+  const jsonData = getJsonData(5);
+  const t = await db.sequelize.transaction();
+  try {
+    // const newReportComponent = await db.ReportComponent.create(jsonData[0]);
+    await db.Company.bulkCreate(jsonData, {
+      updateOnDuplicate: [
+        "businessTypeId",
+      ],
+      transaction: t,
+    });
+
+    await t.commit();
+    console.log("[INSERT BUSINESS TYPE ID SUCCESS]");
+  } catch (err) {
+    await t.rollback();
+    console.log("[ERR INSERT BUSINESS TYPE ID]:", err);
+  }
+};
+
 const inserReportXLSX = async () => {
-  //   console.log("object");
   await insertReportTemplate();
-  //   await insertReportComponentType();
-  //   await insertReportComponent();
+  await insertReportComponentType();
+  await insertReportComponent();
+  await insertReportNorm();
+  await insertBusinessTypeIdToCompany();
 };
 
 module.exports = {
   inserReportXLSX,
-  //   insertReportTemplate,
 };

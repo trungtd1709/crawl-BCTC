@@ -41,6 +41,7 @@ module.exports = (sequelize, Sequelize) =>{
         firstTradingSessionPrice: DataTypes.STRING(256),
         postUpDate: DataTypes.DATE,
         listingDate: DataTypes.DATE,
+        businessTypeId: DataTypes.INTEGER.UNSIGNED,
         kldny:DataTypes.INTEGER.UNSIGNED,
         kldlh:DataTypes.INTEGER.UNSIGNED
     })

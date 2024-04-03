@@ -13,6 +13,27 @@ const startDateInputId = "pt9:id1::content";
 const endDateInputId = "pt9:id2::content";
 const buttonSearchId = "pt9:b1";
 
+const reportGeneralInfoTableId = "pt2:tt1::db";
+const reportYearElId = "pt2:tt1:1:lookupValueId::content";
+const reportQuarterElId = "pt2:tt1:2:lookupValueId::content";
+
+const reportComponentTypeCode = {
+  KQ: "KQ", // kết quả kinh doanh
+  CD: "CD", // cân đối kế toán
+  LCGT: "LCGT", // lưu chuyển tiền tệ gián tiếp
+  CSTC: "CSTC",
+  LCTT: "LCTT", // lưu chuyển tiền tệ trực tiếp
+  HD: "HD",
+  TS: "TS",
+  TSR: "TSR",
+  NB: "NB",
+};
+
+const reportTermType = {
+  quarter: "QUARTER",
+  year: "YEAR",
+};
+
 module.exports = {
   idButtonChangeTab2,
   idButtonChangeTab3,
@@ -27,4 +48,9 @@ module.exports = {
   startDateInputId,
   endDateInputId,
   buttonSearchId,
+  reportComponentTypeCode,
+  reportGeneralInfoTableId,
+  reportTermType,
+  reportYearElId,
+  reportQuarterElId,
 };

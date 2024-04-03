@@ -7,16 +7,16 @@ const {
   secondTableId,
   thirdTableId,
 } = require("../constant.js");
-
+const fs = require("fs");
 const dayjs = require("dayjs");
 
-export const delay = (seconds) => {
+const delay = (seconds) => {
   return new Promise((resolve) => {
     setTimeout(resolve, seconds * 1000);
   });
 };
 
-export const getTableId = (order) => {
+const getTableId = (order) => {
   let tableId;
   switch (order) {
     case 1:
@@ -38,7 +38,7 @@ export const getTableId = (order) => {
   return tableId;
 };
 
-export const getButtonChangeTabId = (order) => {
+const getButtonChangeTabId = (order) => {
   let buttonId;
   switch (order) {
     // case 1:
@@ -60,13 +60,42 @@ export const getButtonChangeTabId = (order) => {
   return buttonId;
 };
 
-export const now = () => {
+const now = () => {
   let today = dayjs();
   return today.format("YYYY-MM-DD HH:mm:ss").toString();
 };
 
-export const stringToFloat = (str) => {
+const stringToFloat = (str) => {
   // let str = "1,900,500.05";
   let number = parseFloat(str.replace(/,/g, ""));
   return number;
+};
+
+async function writeToFile({ content, filename }) {
+  fs.appendFile(filename, `${content}\n`, "utf8", (error) => {
+    if (error) {
+      console.error("[Error writing file]:", error);
+    } else {
+      console.log("File written successfully");
+    }
+  });
+}
+
+async function cleanFile({ filename }) {
+  fs.writeFile(filename, ``, "utf8", (error) => {
+    if (error) {
+      console.error("Error writing file:", error);
+    } else {
+      console.log("File written successfully");
+    }
+  });
+}
+
+module.exports = {
+  delay,
+  getTableId,
+  getButtonChangeTabId,
+  now,
+  stringToFloat,
+  writeToFile,
 };

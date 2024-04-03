@@ -1,7 +1,8 @@
 require("dotenv").config();
 const { inserReportXLSX } = require("./import_xlsx");
 const db = require("./models");
-const { connectDB, syncDB } = require("./services/database");
+const { connectDB, syncDB } = require("./database");
+const { crawlData } = require("./services/crawl");
 
 // const app = express();
 
@@ -16,9 +17,9 @@ const { connectDB, syncDB } = require("./services/database");
 
 const start = async () => {
   connectDB();
-  //   await syncDB();
-  await inserReportXLSX();
+  // await syncDB();
+  // await inserReportXLSX();
+  await crawlData();
 };
 
 start();
-// await crawlData();

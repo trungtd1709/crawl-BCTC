@@ -12,22 +12,16 @@ const connectDB = () => {
 
 const syncDB = async () => {
   try {
-    await db.ReportComponent.sync({ alter: true });
-    await db.ReportComponentType.sync({ alter: true });
-    await db.ReportTemplate.sync({ alter: true });
+    // await db.Company.sync({ alter: true });
+    // await db.ReportComponent.sync({ alter: true });
+    // await db.ReportComponentType.sync({ alter: true });
+    // await db.ReportTemplate.sync({ alter: true });
+    // await db.ReportNorm.sync({ alter: true });
 
     console.log("Sync successfully.");
   } catch (error) {
     console.error("Sync fail:", error);
   }
-};
-
-const getCompanyByBusinessPermit = async (businessPermit) => {
-  const company = await db.Company.findOne({ where: { businessPermit } });
-  if (_.isEmpty(company)) {
-    return {};
-  }
-  return company;
 };
 
 module.exports = { connectDB, syncDB };

@@ -1,9 +1,10 @@
+const { getCompanyByBusinessPermit } = require("../database/companyUtils.js");
 const { Builder, By, Key, until } = require("selenium-webdriver");
 const {
   delay,
   getButtonChangeTabId,
   getTableId,
-  now
+  now,
 } = require("../shared/utils/index.js");
 const {
   companyNameTableId,
@@ -11,7 +12,20 @@ const {
   paginationInputId,
   reportNameTableId,
   startDateInputId,
+  reportComponentTypeCode,
+  reportGeneralInfoTableId,
+  buttonSearchId,
+  reportYearElId,
+  reportQuarterElId,
 } = require("../shared/constant.js");
+const db = require("../models/index.js");
+const {
+  getReportTemplateId,
+  getReportComponentTypeId,
+  getReportComponentId,
+  getNormId,
+} = require("../database/reportUtils.js");
+const _ = require("lodash");
 
 const waitPageLoad = async (driver) => {
   try {
@@ -27,7 +41,7 @@ const waitPageLoad = async (driver) => {
   }
 };
 
-export const crawlData = async () => {
+const crawlData = async () => {
   const driver = await new Builder().forBrowser("chrome").build();
   const urlToCrawl = process.env.WEB_URL_TO_CRAWL;
   let currentPagination = 1;
@@ -37,30 +51,35 @@ export const crawlData = async () => {
     await waitPageLoad(driver);
     let rowIndex = 0;
     // await changeDateRange(driver, "10/10/2023", "05/11/2023");
-    while (rowIndex < 2) {
+    while (rowIndex < 15) {
       // <tr> là các thẻ chứa link báo cáo
-      const trElements = await driver.findElements(By.xpath("//*[@_afrrk]"));
-      // tìm thẻ <td> 1 chứa link báo cáo
-      const tdElements = await trElements[rowIndex].findElements(By.css("td"));
-      for (const [index, tdElement] of tdElements.entries()) {
-        if (index === 1) {
-          // Find and click the anchor element
-          await navigateToReportDetail(tdElement);
-          await waitPageLoad(driver);
-          await delay(10);
-          await startCrawl(driver);
-
-          // Navigate back and wait for the page to load
-          await driver.get(urlToCrawl);
-          await waitPageLoad(driver);
-          await delay(2);
-          break;
-        }
+      if (currentPagination > 1) {
+        await changePagination(driver, currentPagination);
       }
-      if (rowIndex === 1) {
+
+      const trElements = await driver.findElements(By.xpath("//*[@_afrrk]"));
+      // tìm thẻ <td> thứ 2 trong mảng, thẻ này chứa link báo cáo
+      const tdElements = await trElements[rowIndex].findElements(By.css("td"));
+      // for await (const [index, tdElement] of tdElements.entries()) {
+
+      //   if (index === 1) {
+      // Find and click the anchor element
+      await navigateToReportDetail(tdElements[1]);
+      await waitPageLoad(driver);
+      await delay(3);
+      await startCrawlDetail(driver);
+
+      // Navigate back and wait for the page to load
+      await driver.get(urlToCrawl);
+      await waitPageLoad(driver);
+      await delay(1);
+      // break;
+      //   }
+      // }
+      if (rowIndex === 14) {
         rowIndex = 0;
         currentPagination++;
-        changePagination(driver, currentPagination);
+        await changePagination(driver, currentPagination);
         await delay(5);
         continue;
       }
@@ -80,25 +99,53 @@ const navigateToReportDetail = async (anchorContainerEl) => {
 };
 
 // Khi đã vào trang chi tiết gọi hàm này bắt đầu lấy dữ liệu
-const startCrawl = async (driver) => {
+const startCrawlDetail = async (driver) => {
   try {
-    const { businessCode, companyName, reportName } = await getBusinessInfo(
-      driver
-    );
+    const {
+      businessPermit,
+      companyName,
+      reportName,
+      stockCode,
+      reportTemplateId,
+    } = await getBusinessInfo(driver);
+
+    await getReportTermData
+    let code;
+    let reportComponentId;
     let tableOrder = 1;
     let crawlData = [];
-    //crawl dữ liệu table đầu
-    let tableData = await getTableData(driver, tableOrder);
-    crawlData.push(tableData);
-    tableData = [];
-    // Bắt đầu bấm từ nút 2
-    tableOrder++;
-
-    // Có 3 nút cần bấm để chuyển tab
+    let tableData = [];
 
     while (tableOrder < 5) {
-      await changeTab(driver, tableOrder);
-      tableData = await getTableData(driver, tableOrder);
+      if (tableOrder > 1) {
+        await changeTab(driver, tableOrder);
+      }
+      switch (tableOrder) {
+        // bảng CDKT
+        case 1:
+          code = reportComponentTypeCode.CD;
+          break;
+        // bảng KQKD
+        case 2:
+          code = reportComponentTypeCode.KQ;
+          break;
+        // bảng LCTT-TT
+        case 3:
+          code = reportComponentTypeCode.LCTT;
+          break;
+        // bảng LCTT-TT
+        case 4:
+          code = reportComponentTypeCode.LCGT;
+          break;
+        default:
+          code = "";
+      }
+      reportComponentId = await getReportComponentId({
+        // reportComponentTypeId,
+        code,
+        reportTemplateId,
+      });
+      tableData = await getTableData({ driver, tableOrder, reportComponentId });
       crawlData.push(tableData);
       tableData = [];
       tableOrder++;
@@ -106,28 +153,47 @@ const startCrawl = async (driver) => {
     console.log(
       now() +
         "[CRAWL SUCCESS]:" +
-        " " +
-        businessCode +
-        " " +
+        "\n" +
+        businessPermit +
+        "\n" +
+        stockCode +
+        "\n" +
         companyName +
-        " " +
+        "\n" +
         reportName
     );
-    console.log(now() + "[crawledData]:", crawlData);
+    // console.log(now() + "[crawledData]:", crawlData);
     return;
   } catch (err) {
-    console.log(now() + " - [ERROR] crawl fail!!!" + err);
-    console.log(err);
+    console.log(now() + " - [ERROR]: " + err);
+    return;
   }
 };
 
 // lấy dữ liệu mảng các row của 1 table
-const getTableData = async (driver, tableOrder) => {
+const getTableData = async ({ driver, tableOrder, reportComponentId }) => {
   const tableId = getTableId(tableOrder);
   const tableEl = await driver.findElement(By.id(tableId));
   const rowsDataEl = await tableEl.findElements(By.css("tr"));
-  const tableData = await getDetailTableData(rowsDataEl);
+  const tableData = await getDetailTableData({ rowsDataEl, reportComponentId });
   return tableData;
+};
+
+/**
+ * @param {{ driver: import('selenium-webdriver').WebDriver }} params - The parameters object.
+ */
+const getReportTermData = async ({ driver }) => {
+  // const tableId = reportGeneralInfoTableId;
+  // const tableEl = await driver.findElement(By.id(tableId));
+  // const rowsDataEl = await tableEl.findElements(By.className("tr"));
+  const reportYearEl = await driver.findElement(By.id(reportYearElId));
+  const reportYear = reportYearEl.getText();
+
+  const reportQuarterEl = await driver.findElement(By.id(reportQuarterElId));
+  const reportQuarter = reportQuarterEl.getText();
+  console.log("[reportYear]:", reportYear);
+  console.log("[reportQuarter]:", reportQuarter);
+  return { reportYear, reportQuarter };
 };
 
 const getBusinessInfo = async (driver) => {
@@ -142,20 +208,34 @@ const getBusinessInfo = async (driver) => {
   const reportName = await reportNameEls[1].getText();
 
   const headerEls = await driver.findElements(By.css(".xth.xtk"));
-  const businessCodeContainerEl = headerEls[0];
-  const businessCode = await businessCodeContainerEl.getText();
+  const businessPermitContainerEl = headerEls[0];
+  const businessPermit = await businessPermitContainerEl.getText();
+
+  const company = await getCompanyByBusinessPermit({ businessPermit });
+  const { stockCode, businessTypeId = 0 } = company;
+  const reportTemplateId = await getReportTemplateId({ businessTypeId });
 
   console.log(
     now() +
       ": [Start crawling !!!]" +
-      `Mã doanh nghiệp: ${businessCode}` +
-      " " +
+      `Mã doanh nghiệp (businessPermit): ${businessPermit}` +
+      "\n" +
+      `Stock code: ${stockCode}` +
+      "\n" +
+      `reportTemplateId: ${reportTemplateId}` +
+      "\n" +
       `Tên công ty: ${companyName}` +
-      " " +
+      "\n" +
       `Tiêu đề: ${reportName}`
   );
 
-  return { companyName, reportName, businessCode };
+  return {
+    companyName,
+    reportName,
+    businessPermit,
+    stockCode,
+    reportTemplateId,
+  };
 };
 
 async function waitForElementVisibleById(driver, elId) {
@@ -165,13 +245,13 @@ async function waitForElementVisibleById(driver, elId) {
 }
 
 // lấy thông tin chi tiết của table
-const getDetailTableData = async (balanceSheetRowsEl) => {
+const getDetailTableData = async ({ rowsDataEl, reportComponentId }) => {
   let tableData = [];
-  for (const [rowIndex, balanceSheetRow] of balanceSheetRowsEl.entries()) {
+  outerLoop: for await (const [rowIndex, rowDataEl] of rowsDataEl.entries()) {
     if (rowIndex === 0) continue;
-    const dataEls = await balanceSheetRow.findElements(By.css("td"));
-    let keyname, code, numberEndOfTerm, numberStartOfTerm;
-    for (const [dataIndex, dataEl] of dataEls.entries()) {
+    const dataEls = await rowDataEl.findElements(By.css("td"));
+    let keyname, publishNormCode, value, numberStartOfTerm, normId;
+    for await (const [dataIndex, dataEl] of dataEls.entries()) {
       switch (dataIndex) {
         // cột có tên chỉ tiêu
         case 0:
@@ -181,17 +261,22 @@ const getDetailTableData = async (balanceSheetRowsEl) => {
 
         // Cột mã số chỉ tiêu
         case 1:
-          const codeEl = await dataEl.findElement(By.css("span"));
-          code = await codeEl.getText();
+          const publishNormCodeEl = await dataEl.findElement(By.css("span"));
+          publishNormCode = await publishNormCodeEl.getText();
+          if (!publishNormCode) {
+            continue outerLoop;
+          }
+          // console.log("[publishNormCode]:", publishNormCode);
+          normId = await getNormId({ publishNormCode, reportComponentId });
           break;
 
         // Cột có số cuối kỳ
         case 3:
           const numberEndOfTermEl = await dataEl.findElement(By.css("span"));
-          numberEndOfTerm = await numberEndOfTermEl.getText();
+          value = await numberEndOfTermEl.getText();
           break;
 
-        // Cột có số đầu kỳ
+        // Cột có số đầu kỳ (ko cần quan tâm)
         case 4:
           const numberStartOfTermEl = await dataEl.findElement(By.css("span"));
           numberStartOfTerm = await numberStartOfTermEl.getText();
@@ -202,14 +287,17 @@ const getDetailTableData = async (balanceSheetRowsEl) => {
     }
     const objectData = {
       keyname,
-      code,
-      numberEndOfTerm,
+      publishNormCode,
+      value,
       numberStartOfTerm,
+      normId,
     };
     // console.log("[objectData]:", objectData);
-    tableData.push(objectData);
+    if (publishNormCode) {
+      tableData.push(objectData);
+    }
   }
-  console.log("[tableData]:", tableData);
+  // console.log("[tableData]:", tableData);
   return tableData;
 };
 
@@ -229,6 +317,7 @@ const changePagination = async (driver, value) => {
   let inputElement = await driver.findElement(By.id(paginationInputId));
   await inputElement.clear();
   await inputElement.sendKeys(value, Key.ENTER);
+  await delay(1);
   return;
 };
 
@@ -248,3 +337,5 @@ const changeDateRange = async (driver, startDate, endDate) => {
   driver.executeScript("arguments[0].click();", buttonSearchEl);
   return;
 };
+
+module.exports = { crawlData };
