@@ -21,7 +21,7 @@ module.exports = sequelize => {
       reportDate: DataTypes.DATE,
       isAdjusted: DataTypes.TINYINT,
       unitedStatusId: DataTypes.TINYINT,
-      createdDate: DataTypes.TIME,
+      reportDate: DataTypes.TIME,
       lastUpdate: DataTypes.TIME,
       klcpny: DataTypes.BIGINT,
       klcplh: DataTypes.BIGINT,

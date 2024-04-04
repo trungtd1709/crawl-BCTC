@@ -14,8 +14,10 @@ const endDateInputId = "pt9:id2::content";
 const buttonSearchId = "pt9:b1";
 
 const reportGeneralInfoTableId = "pt2:tt1::db";
-const reportYearElId = "pt2:tt1:1:lookupValueId::content";
+const yearPeriodId = "pt2:tt1:1:lookupValueId::content";
 const reportQuarterElId = "pt2:tt1:2:lookupValueId::content";
+
+const reportNameTableClassname = "xuk p_AFCore p_AFDefault";
 
 const reportComponentTypeCode = {
   KQ: "KQ", // kết quả kinh doanh
@@ -29,10 +31,35 @@ const reportComponentTypeCode = {
   NB: "NB",
 };
 
-const reportTermType = {
+const reportTermTypeConst = {
   quarter: "QUARTER",
   year: "YEAR",
+  half: "HALF",
 };
+
+const reportTermIdConst = {
+  nam: 1,
+  quy1: 2,
+  quy2: 3,
+  quy3: 4,
+  quy4: 5,
+};
+
+const auditStatusConst = {
+  soatXet: 3,
+  chuaKiemToan: 4,
+  daKiemToan: 10,
+  // 5-Tự tạm tính (Thông tin từ trang web CBTT ko có loại này)
+  // 6-VST duyệt (Thông tin từ trang web CBTT ko có loại này)
+};
+
+const unitedStatusIdConst = {
+  tongHop: 0,
+  rieng: 1,
+  me: 2,
+};
+
+const startPagination = 200;
 
 module.exports = {
   idButtonChangeTab2,
@@ -50,7 +77,12 @@ module.exports = {
   buttonSearchId,
   reportComponentTypeCode,
   reportGeneralInfoTableId,
-  reportTermType,
-  reportYearElId,
+  reportTermTypeConst,
+  yearPeriodId,
   reportQuarterElId,
+  reportTermIdConst,
+  auditStatusConst,
+  unitedStatusIdConst,
+  reportNameTableClassname,
+  startPagination,
 };

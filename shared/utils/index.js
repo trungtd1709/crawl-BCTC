@@ -91,6 +91,20 @@ async function cleanFile({ filename }) {
   });
 }
 
+const stringToInt = (str) => {
+  let cleanString = str.replace(/,/g, "");
+  const intValue = parseInt(cleanString);
+  return intValue;
+};
+
+const removeFirst0 = (str) => {
+  let newStr = str;
+  if (str.charAt(0) === "0") {
+    newStr = str.slice(1);
+  }
+  return newStr;
+};
+
 module.exports = {
   delay,
   getTableId,
@@ -98,4 +112,6 @@ module.exports = {
   now,
   stringToFloat,
   writeToFile,
+  stringToInt,
+  removeFirst0,
 };

@@ -1,6 +1,6 @@
 const db = require("../models");
 const _ = require("lodash");
-const { writeToFile } = require("../shared/utils");
+const { writeToFile, removeFirst0 } = require("../shared/utils");
 const { Op } = require("sequelize");
 
 const getReportTemplateId = async ({ businessTypeId }) => {
@@ -59,7 +59,7 @@ const getNormId = async ({ publishNormCode, reportComponentId }) => {
       where: {
         publishNormCode: {
           // Bắt TH 01,02
-          [Op.in]: [publishNormCode, parseInt(publishNormCode).toString()],
+          [Op.in]: [publishNormCode, removeFirst0(publishNormCode)],
         },
         reportComponentId,
       },

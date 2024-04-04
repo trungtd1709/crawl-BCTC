@@ -5,6 +5,8 @@ const {
   getButtonChangeTabId,
   getTableId,
   now,
+  writeToFile,
+  stringToInt,
 } = require("../shared/utils/index.js");
 const {
   companyNameTableId,
@@ -15,8 +17,13 @@ const {
   reportComponentTypeCode,
   reportGeneralInfoTableId,
   buttonSearchId,
-  reportYearElId,
+  yearPeriodId,
   reportQuarterElId,
+  reportTermIdConst,
+  reportTermTypeConst,
+  auditStatusConst,
+  reportNameTableClassname,
+  startPagination,
 } = require("../shared/constant.js");
 const db = require("../models/index.js");
 const {
@@ -26,6 +33,13 @@ const {
   getNormId,
 } = require("../database/reportUtils.js");
 const _ = require("lodash");
+const {
+  getReportTermType,
+  getReportTermId,
+  getAuditStatusId,
+  getUnitedStatusId,
+  getTableCode,
+} = require("./crawl.util.js");
 
 const waitPageLoad = async (driver) => {
   try {
@@ -44,7 +58,7 @@ const waitPageLoad = async (driver) => {
 const crawlData = async () => {
   const driver = await new Builder().forBrowser("chrome").build();
   const urlToCrawl = process.env.WEB_URL_TO_CRAWL;
-  let currentPagination = 1;
+  let currentPagination = startPagination;
 
   try {
     await driver.get(urlToCrawl);
@@ -107,59 +121,47 @@ const startCrawlDetail = async (driver) => {
       reportName,
       stockCode,
       reportTemplateId,
-    } = await getBusinessInfo(driver);
+      auditStatusId,
+      reportDate,
+      isAdjusted,
+      reportTermId,
+      unitedStatusId,
+    } = await getReportTitleInfo({ driver });
+    let crawlData = (await getAllTableData({ driver, reportTemplateId })) ?? [];
 
-    await getReportTermData
-    let code;
-    let reportComponentId;
-    let tableOrder = 1;
-    let crawlData = [];
-    let tableData = [];
+    const reportData = {
+      businessPermit,
+      stockCode,
+      companyName,
+      reportName,
+      reportTemplateId,
+      auditStatusId,
+      reportDate,
+      isAdjusted,
+      reportTermId,
+      unitedStatusId,
+      crawlData,
+    };
 
-    while (tableOrder < 5) {
-      if (tableOrder > 1) {
-        await changeTab(driver, tableOrder);
-      }
-      switch (tableOrder) {
-        // bảng CDKT
-        case 1:
-          code = reportComponentTypeCode.CD;
-          break;
-        // bảng KQKD
-        case 2:
-          code = reportComponentTypeCode.KQ;
-          break;
-        // bảng LCTT-TT
-        case 3:
-          code = reportComponentTypeCode.LCTT;
-          break;
-        // bảng LCTT-TT
-        case 4:
-          code = reportComponentTypeCode.LCGT;
-          break;
-        default:
-          code = "";
-      }
-      reportComponentId = await getReportComponentId({
-        // reportComponentTypeId,
-        code,
-        reportTemplateId,
-      });
-      tableData = await getTableData({ driver, tableOrder, reportComponentId });
-      crawlData.push(tableData);
-      tableData = [];
-      tableOrder++;
-    }
+    await writeToFile({
+      content: JSON.stringify(reportData),
+      filename: "result.txt",
+    });
+
     console.log(
       now() +
         "[CRAWL SUCCESS]:" +
         "\n" +
+        "[businessPermit]:" +
         businessPermit +
         "\n" +
+        "[stockCode]:" +
         stockCode +
         "\n" +
+        "[companyName]:" +
         companyName +
         "\n" +
+        "[reportName]:" +
         reportName
     );
     // console.log(now() + "[crawledData]:", crawlData);
@@ -170,8 +172,41 @@ const startCrawlDetail = async (driver) => {
   }
 };
 
+const getAllTableData = async ({ driver, reportTemplateId }) => {
+  let tableOrder = 1;
+  let reportComponentId;
+  let singleTableData = [];
+  let allTableData = [];
+  while (tableOrder < 5) {
+    if (tableOrder > 1) {
+      await changeTab(driver, tableOrder);
+    }
+    code = getTableCode({ tableOrder });
+    reportComponentId = await getReportComponentId({
+      // reportComponentTypeId,
+      code,
+      reportTemplateId,
+    });
+    singleTableData = await getSingleTableData({
+      driver,
+      tableOrder,
+      reportComponentId,
+    });
+    allTableData = [...allTableData, ...singleTableData];
+    // allTableData.push(singleTableData);
+    singleTableData = [];
+    tableOrder++;
+  }
+
+  return allTableData;
+};
+
 // lấy dữ liệu mảng các row của 1 table
-const getTableData = async ({ driver, tableOrder, reportComponentId }) => {
+const getSingleTableData = async ({
+  driver,
+  tableOrder,
+  reportComponentId,
+}) => {
   const tableId = getTableId(tableOrder);
   const tableEl = await driver.findElement(By.id(tableId));
   const rowsDataEl = await tableEl.findElements(By.css("tr"));
@@ -180,32 +215,24 @@ const getTableData = async ({ driver, tableOrder, reportComponentId }) => {
 };
 
 /**
- * @param {{ driver: import('selenium-webdriver').WebDriver }} params - The parameters object.
+ * @param {{ driver: import('selenium-webdriver').WebDriver }} params
  */
-const getReportTermData = async ({ driver }) => {
-  // const tableId = reportGeneralInfoTableId;
-  // const tableEl = await driver.findElement(By.id(tableId));
-  // const rowsDataEl = await tableEl.findElements(By.className("tr"));
-  const reportYearEl = await driver.findElement(By.id(reportYearElId));
-  const reportYear = reportYearEl.getText();
-
-  const reportQuarterEl = await driver.findElement(By.id(reportQuarterElId));
-  const reportQuarter = reportQuarterEl.getText();
-  console.log("[reportYear]:", reportYear);
-  console.log("[reportQuarter]:", reportQuarter);
-  return { reportYear, reportQuarter };
-};
-
-const getBusinessInfo = async (driver) => {
+const getReportTitleInfo = async ({ driver }) => {
   const companyNameTableEl = await driver.findElement(
     By.id(companyNameTableId)
   );
   const companyNameEls = await companyNameTableEl.findElements(By.css("td"));
   const companyName = await companyNameEls[1].getText();
 
-  const reportNameTableEl = await driver.findElement(By.id(reportNameTableId));
+  // const reportNameTableEl = await driver.findElement(By.id(reportNameTableId));
+  // const reportNameEls = await reportNameTableEl.findElements(By.css("td"));
+  // const reportName = (await reportNameEls[1].getText()).toLowerCase();
+
+  const reportNameTableEl = await driver.findElement(
+    By.className(reportNameTableClassname)
+  );
   const reportNameEls = await reportNameTableEl.findElements(By.css("td"));
-  const reportName = await reportNameEls[1].getText();
+  const reportName = (await reportNameEls[0].getText()).toLowerCase();
 
   const headerEls = await driver.findElements(By.css(".xth.xtk"));
   const businessPermitContainerEl = headerEls[0];
@@ -214,6 +241,16 @@ const getBusinessInfo = async (driver) => {
   const company = await getCompanyByBusinessPermit({ businessPermit });
   const { stockCode, businessTypeId = 0 } = company;
   const reportTemplateId = await getReportTemplateId({ businessTypeId });
+
+  // reportTermType dua tren reportName
+  const reportTermType = getReportTermType({ reportName });
+  const unitedStatusId = getUnitedStatusId({ reportName });
+
+  const { auditStatusId, reportTermId, isAdjusted, reportDate } =
+    await getReportGeneralInfo({
+      driver,
+      reportTermType,
+    });
 
   console.log(
     now() +
@@ -235,7 +272,92 @@ const getBusinessInfo = async (driver) => {
     businessPermit,
     stockCode,
     reportTemplateId,
+    auditStatusId,
+    reportTermId,
+    unitedStatusId,
+    isAdjusted,
+    reportDate,
   };
+};
+
+/**
+ * @param {{ driver: import('selenium-webdriver').WebDriver }} params
+ */
+const getReportGeneralInfo = async ({ driver, reportTermType }) => {
+  const tablesInfo = await driver.findElements(By.id(reportGeneralInfoTableId));
+  let yearPeriod, trichYeuValue, toChucKiemToanValue, quarterPeriod, reportDate;
+  let isAdjusted = false;
+
+  // co TH 2 tables, lay table cuoi
+  const dataTable = tablesInfo[tablesInfo.length - 1];
+  const rowEls = await dataTable.findElements(By.css("tr"));
+  // la duoc cac row chua thong tin cua bang
+
+  for await (const [rowIndex, rowEl] of rowEls.entries()) {
+    const dataEls = await rowEl.findElements(By.css("td"));
+    let dataName = null,
+      dataValue = null;
+
+    for await (const [dataIndex, dataEl] of dataEls.entries()) {
+      switch (dataIndex) {
+        case 0:
+          dataName = await dataEl.getText();
+          break;
+        case 1:
+          const test = await dataEl.getText();
+          break;
+        case 2:
+          dataValue = await dataEl.getText();
+          if (!dataValue) {
+            const inputs = await dataEl.findElements(By.css("input"));
+            if (inputs.length > 0) {
+              dataValue = await inputs[0].getAttribute("value");
+            }
+          }
+          break;
+        default:
+      }
+    }
+
+    switch (dataName) {
+      case "Tổ chức kiểm toán":
+        toChucKiemToanValue = dataValue;
+        break;
+
+      case "Trích yếu":
+        trichYeuValue = dataValue;
+        break;
+
+      case "Năm tài chính":
+        yearPeriod = dataValue;
+        break;
+
+      case "Quý":
+        quarterPeriod = dataValue;
+        break;
+
+      case "Lý do đính chính":
+        isAdjusted = true;
+        break;
+
+      case "Ngày ký ban hành":
+        reportDate = dataValue;
+        break;
+      default:
+    }
+  }
+
+  const auditStatusId = getAuditStatusId({
+    toChucKiemToanValue,
+    trichYeuValue,
+  });
+
+  const reportTermId = getReportTermId({
+    quarterPeriod,
+    reportTermType,
+  });
+
+  return { auditStatusId, reportTermId, isAdjusted, reportDate };
 };
 
 async function waitForElementVisibleById(driver, elId) {
@@ -273,13 +395,13 @@ const getDetailTableData = async ({ rowsDataEl, reportComponentId }) => {
         // Cột có số cuối kỳ
         case 3:
           const numberEndOfTermEl = await dataEl.findElement(By.css("span"));
-          value = await numberEndOfTermEl.getText();
+          value = stringToInt(await numberEndOfTermEl.getText());
           break;
 
         // Cột có số đầu kỳ (ko cần quan tâm)
         case 4:
           const numberStartOfTermEl = await dataEl.findElement(By.css("span"));
-          numberStartOfTerm = await numberStartOfTermEl.getText();
+          numberStartOfTerm = stringToInt(await numberStartOfTermEl.getText());
           break;
 
         default:
@@ -289,7 +411,7 @@ const getDetailTableData = async ({ rowsDataEl, reportComponentId }) => {
       keyname,
       publishNormCode,
       value,
-      numberStartOfTerm,
+      // numberStartOfTerm,
       normId,
     };
     // console.log("[objectData]:", objectData);
@@ -336,6 +458,16 @@ const changeDateRange = async (driver, startDate, endDate) => {
   const buttonSearchEl = await driver.findElement(By.id(buttonSearchId));
   driver.executeScript("arguments[0].click();", buttonSearchEl);
   return;
+};
+
+/**
+ * @param {{ driver: import('selenium-webdriver').WebDriver }} params
+ */
+const checkExistText = async ({ driver, text }) => {
+  let elements = await driver.findElements(
+    By.xpath(`//*[contains(text(), '${text}')]`)
+  );
+  return elements.length > 0;
 };
 
 module.exports = { crawlData };
