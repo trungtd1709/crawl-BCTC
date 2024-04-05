@@ -9,6 +9,7 @@ const {
 } = require("../constant.js");
 const fs = require("fs");
 const dayjs = require("dayjs");
+const moment = require("moment");
 
 const delay = (seconds) => {
   return new Promise((resolve) => {
@@ -105,6 +106,12 @@ const removeFirst0 = (str) => {
   return newStr;
 };
 
+const formatDate = (dateStr) => {
+  const dateObj = moment(dateStr, "DD/MM/YYYY");
+  const formatedDate = dateObj.format("YYYY-MM-DD");
+  return formatedDate;
+};
+
 module.exports = {
   delay,
   getTableId,
@@ -114,4 +121,5 @@ module.exports = {
   writeToFile,
   stringToInt,
   removeFirst0,
+  formatDate,
 };

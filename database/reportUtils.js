@@ -53,7 +53,7 @@ const getReportComponentId = async ({ reportTemplateId, code }) => {
   return reportComponentId;
 };
 
-const getNormId = async ({ publishNormCode, reportComponentId }) => {
+const getReportNormId = async ({ publishNormCode, reportComponentId }) => {
   const reportNorm =
     (await db.ReportNorm.findOne({
       where: {
@@ -80,13 +80,13 @@ const getNormId = async ({ publishNormCode, reportComponentId }) => {
       content: `${JSON.stringify(missingReportNorm)},`,
     });
   }
-  const { normId } = reportNorm;
-  return normId;
+  const { reportNormId, normId } = reportNorm;
+  return reportNormId;
 };
 
 module.exports = {
   getReportTemplateId,
   getReportComponentTypeId,
   getReportComponentId,
-  getNormId,
+  getReportNormId,
 };

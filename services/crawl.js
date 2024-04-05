@@ -30,7 +30,7 @@ const {
   getReportTemplateId,
   getReportComponentTypeId,
   getReportComponentId,
-  getNormId,
+  getReportNormId,
 } = require("../database/reportUtils.js");
 const _ = require("lodash");
 const {
@@ -40,6 +40,7 @@ const {
   getUnitedStatusId,
   getTableCode,
 } = require("./crawl.util.js");
+const { insertReportToDB } = require("../database/insert.js");
 
 const waitPageLoad = async (driver) => {
   try {
@@ -126,22 +127,28 @@ const startCrawlDetail = async (driver) => {
       isAdjusted,
       reportTermId,
       unitedStatusId,
+      yearPeriod
     } = await getReportTitleInfo({ driver });
-    let crawlData = (await getAllTableData({ driver, reportTemplateId })) ?? [];
+
+    let reportDataDetails =
+      (await getAllTableData({ driver, reportTemplateId })) ?? [];
 
     const reportData = {
       businessPermit,
       stockCode,
       companyName,
       reportName,
+      yearPeriod,
       reportTemplateId,
       auditStatusId,
       reportDate,
       isAdjusted,
       reportTermId,
       unitedStatusId,
-      crawlData,
+      reportDataDetails,
     };
+
+    await insertReportToDB({ reportData });
 
     await writeToFile({
       content: JSON.stringify(reportData),
@@ -242,11 +249,11 @@ const getReportTitleInfo = async ({ driver }) => {
   const { stockCode, businessTypeId = 0 } = company;
   const reportTemplateId = await getReportTemplateId({ businessTypeId });
 
-  // reportTermType dua tren reportName
+  // reportTermType dua tren reportName (quý, bán niên, năm)
   const reportTermType = getReportTermType({ reportName });
   const unitedStatusId = getUnitedStatusId({ reportName });
 
-  const { auditStatusId, reportTermId, isAdjusted, reportDate } =
+  const { auditStatusId, reportTermId, isAdjusted, reportDate, yearPeriod } =
     await getReportGeneralInfo({
       driver,
       reportTermType,
@@ -261,6 +268,8 @@ const getReportTitleInfo = async ({ driver }) => {
       "\n" +
       `reportTemplateId: ${reportTemplateId}` +
       "\n" +
+      `yearPeriod: ${yearPeriod}` +
+      "\n" +
       `Tên công ty: ${companyName}` +
       "\n" +
       `Tiêu đề: ${reportName}`
@@ -269,6 +278,7 @@ const getReportTitleInfo = async ({ driver }) => {
   return {
     companyName,
     reportName,
+    yearPeriod,
     businessPermit,
     stockCode,
     reportTemplateId,
@@ -328,11 +338,11 @@ const getReportGeneralInfo = async ({ driver, reportTermType }) => {
         trichYeuValue = dataValue;
         break;
 
-      case "Năm tài chính":
+      case "Năm tài chính":
         yearPeriod = dataValue;
         break;
 
-      case "Quý":
+      case "Quý":
         quarterPeriod = dataValue;
         break;
 
@@ -344,6 +354,7 @@ const getReportGeneralInfo = async ({ driver, reportTermType }) => {
         reportDate = dataValue;
         break;
       default:
+        console.log("default");
     }
   }
 
@@ -357,7 +368,7 @@ const getReportGeneralInfo = async ({ driver, reportTermType }) => {
     reportTermType,
   });
 
-  return { auditStatusId, reportTermId, isAdjusted, reportDate };
+  return { auditStatusId, reportTermId, isAdjusted, reportDate, yearPeriod };
 };
 
 async function waitForElementVisibleById(driver, elId) {
@@ -372,7 +383,7 @@ const getDetailTableData = async ({ rowsDataEl, reportComponentId }) => {
   outerLoop: for await (const [rowIndex, rowDataEl] of rowsDataEl.entries()) {
     if (rowIndex === 0) continue;
     const dataEls = await rowDataEl.findElements(By.css("td"));
-    let keyname, publishNormCode, value, numberStartOfTerm, normId;
+    let keyname, publishNormCode, value, numberStartOfTerm, reportNormId;
     for await (const [dataIndex, dataEl] of dataEls.entries()) {
       switch (dataIndex) {
         // cột có tên chỉ tiêu
@@ -389,7 +400,7 @@ const getDetailTableData = async ({ rowsDataEl, reportComponentId }) => {
             continue outerLoop;
           }
           // console.log("[publishNormCode]:", publishNormCode);
-          normId = await getNormId({ publishNormCode, reportComponentId });
+          reportNormId = await getReportNormId({ publishNormCode, reportComponentId });
           break;
 
         // Cột có số cuối kỳ
@@ -412,10 +423,10 @@ const getDetailTableData = async ({ rowsDataEl, reportComponentId }) => {
       publishNormCode,
       value,
       // numberStartOfTerm,
-      normId,
+      reportNormId,
     };
     // console.log("[objectData]:", objectData);
-    if (publishNormCode) {
+    if (publishNormCode && reportNormId) {
       tableData.push(objectData);
     }
   }
@@ -469,5 +480,7 @@ const checkExistText = async ({ driver, text }) => {
   );
   return elements.length > 0;
 };
+
+
 
 module.exports = { crawlData };

@@ -1,3 +1,5 @@
+const startPagination = 1;
+
 const idButtonChangeTab2 = "pt2:KQKD::ti";
 const idButtonChangeTab3 = "pt2:LCTT-TT::ti";
 const idButtonChangeTab4 = "pt2:LCTT-GT::ti";
@@ -12,12 +14,11 @@ const reportNameTableId = "pt2:plam2";
 const startDateInputId = "pt9:id1::content";
 const endDateInputId = "pt9:id2::content";
 const buttonSearchId = "pt9:b1";
-
 const reportGeneralInfoTableId = "pt2:tt1::db";
 const yearPeriodId = "pt2:tt1:1:lookupValueId::content";
 const reportQuarterElId = "pt2:tt1:2:lookupValueId::content";
-
 const reportNameTableClassname = "xuk p_AFCore p_AFDefault";
+const paginationTableId = "pt9:t1::nb_cnt_pg";
 
 const reportComponentTypeCode = {
   KQ: "KQ", // kết quả kinh doanh
@@ -43,6 +44,7 @@ const reportTermIdConst = {
   quy2: 3,
   quy3: 4,
   quy4: 5,
+  banNien: 9,
 };
 
 const auditStatusConst = {
@@ -58,8 +60,6 @@ const unitedStatusIdConst = {
   rieng: 1,
   me: 2,
 };
-
-const startPagination = 200;
 
 module.exports = {
   idButtonChangeTab2,

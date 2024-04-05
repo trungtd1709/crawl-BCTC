@@ -43,6 +43,7 @@ const getReportTermId = ({ reportTermType, quarterPeriod }) => {
       break;
 
     case reportTermTypeConst.half:
+      reportTermId = reportTermIdConst.banNien;
       break;
 
     case reportTermTypeConst.year:

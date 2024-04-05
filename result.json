@@ -1,43 +1,43 @@
 {
-  "businessPermit": "4300208207",
-  "stockCode": "LQN",
-  "companyName": "Công ty Cổ phần Licogi Quảng Ngãi",
-  "reportName": "tin công bố / báo cáo tài chính riêng - năm",
+  "businessPermit": "0107795944",
+  "stockCode": "BAF",
+  "companyName": "Công ty Cổ phần Nông nghiệp BAF Việt Nam",
+  "reportName": "tin công bố / báo cáo tài chính riêng - bán niên",
   "reportTemplateId": 54,
   "auditStatusId": 10,
-  "reportDate": "29/03/2024",
-  "isAdjusted": true,
-  "reportTermId": 1,
+  "reportDate": "29/08/2023",
+  "isAdjusted": false,
+  "reportTermId": 9,
   "unitedStatusId": 1,
   "crawlData": [
     {
       "keyname": "A- TÀI SẢN NGẮN HẠN",
       "publishNormCode": "100",
-      "value": 90642721404,
+      "value": 3689857590062,
       "normId": 438
     },
     {
       "keyname": "I. Tiền và các khoản tương đương tiền",
       "publishNormCode": "110",
-      "value": 848218652,
+      "value": 100691273298,
       "normId": 98
     },
     {
       "keyname": "1. Tiền",
       "publishNormCode": "111",
-      "value": 848218652,
+      "value": 100141273298,
       "normId": 99
     },
     {
       "keyname": "2. Các khoản tương đương tiền",
       "publishNormCode": "112",
-      "value": 0,
+      "value": 550000000,
       "normId": 100
     },
     {
       "keyname": "II. Các khoản đầu tư tài chính ngắn hạn",
       "publishNormCode": "120",
-      "value": 0,
+      "value": 332000000000,
       "normId": 101
     },
     {
@@ -55,25 +55,25 @@
     {
       "keyname": "3. Đầu tư nắm giữ đến ngày đáo hạn",
       "publishNormCode": "123",
-      "value": 0,
+      "value": 332000000000,
       "normId": 954
     },
     {
       "keyname": "III. Các khoản phải thu ngắn hạn",
       "publishNormCode": "130",
-      "value": 48090040555,
+      "value": 2011852881873,
       "normId": 104
     },
     {
       "keyname": "1. Phải thu ngắn hạn của khách hàng",
       "publishNormCode": "131",
-      "value": 24741277687,
+      "value": 1767845850273,
       "normId": 105
     },
     {
       "keyname": "2. Trả trước cho người bán ngắn hạn",
       "publishNormCode": "132",
-      "value": 18651474432,
+      "value": 183938798567,
       "normId": 106
     },
     {
@@ -91,37 +91,37 @@
     {
       "keyname": "5. Phải thu về cho vay ngắn hạn",
       "publishNormCode": "135",
-      "value": 0,
+      "value": 853600000,
       "normId": 935
     },
     {
       "keyname": "6. Phải thu ngắn hạn khác",
       "publishNormCode": "136",
-      "value": 7605898319,
+      "value": 63334355924,
       "normId": 109
     },
     {
       "keyname": "7. Dự phòng phải thu ngắn hạn khó đòi",
       "publishNormCode": "137",
-      "value": -2908609883,
+      "value": -4303303908,
       "normId": 439
     },
     {
       "keyname": "8. Tài sản Thiếu chờ xử lý",
       "publishNormCode": "139",
-      "value": 0,
+      "value": 183581017,
       "normId": 276
     },
     {
       "keyname": "IV. Hàng tồn kho",
       "publishNormCode": "140",
-      "value": 41288347855,
+      "value": 1221834330186,
       "normId": 110
     },
     {
       "keyname": "1. Hàng tồn kho",
       "publishNormCode": "141",
-      "value": 41288347855,
+      "value": 1221834330186,
       "normId": 111
     },
     {
@@ -133,25 +133,25 @@
     {
       "keyname": "V.Tài sản ngắn hạn khác",
       "publishNormCode": "150",
-      "value": 416114342,
+      "value": 23479104705,
       "normId": 112
     },
     {
       "keyname": "1. Chi phí trả trước ngắn hạn",
       "publishNormCode": "151",
-      "value": 416114342,
+      "value": 19015523916,
       "normId": 113
     },
     {
       "keyname": "2. Thuế GTGT được khấu trừ",
       "publishNormCode": "152",
-      "value": 0,
+      "value": 3778929648,
       "normId": 114
     },
     {
       "keyname": "3. Thuế và các khoản khác phải thu Nhà nước",
       "publishNormCode": "153",
-      "value": 0,
+      "value": 684651141,
       "normId": 115
     },
     {
@@ -169,13 +169,13 @@
     {
       "keyname": "B. TÀI SẢN DÀI HẠN",
       "publishNormCode": "200",
-      "value": 25999935788,
+      "value": 2687725223408,
       "normId": 441
     },
     {
       "keyname": "I. Các khoản phải thu dài hạn",
       "publishNormCode": "210",
-      "value": 956716276,
+      "value": 79037014200,
       "normId": 117
     },
     {
@@ -205,13 +205,13 @@
     {
       "keyname": "5. Phải thu về cho vay dài hạn",
       "publishNormCode": "215",
-      "value": 0,
+      "value": 525000000,
       "normId": 937
     },
     {
       "keyname": "6. Phải thu dài hạn khác",
       "publishNormCode": "216",
-      "value": 956716276,
+      "value": 78512014200,
       "normId": 442
     },
     {
@@ -223,25 +223,25 @@
     {
       "keyname": "II.Tài sản cố định",
       "publishNormCode": "220",
-      "value": 15130705156,
+      "value": 1082456096603,
       "normId": 121
     },
     {
       "keyname": "1. Tài sản cố định hữu hình",
       "publishNormCode": "221",
-      "value": 12998155156,
+      "value": 894949298441,
       "normId": 122
     },
     {
       "keyname": "- Nguyên giá",
       "publishNormCode": "222",
-      "value": 39784420619,
+      "value": 1096318187490,
       "normId": 123
     },
     {
       "keyname": "- Giá trị hao mòn lũy kế",
       "publishNormCode": "223",
-      "value": -26786265463,
+      "value": -201368889049,
       "normId": 124
     },
     {
@@ -265,19 +265,19 @@
     {
       "keyname": "3. Tài sản cố định vô hình",
       "publishNormCode": "227",
-      "value": 2132550000,
+      "value": 187506798162,
       "normId": 128
     },
     {
       "keyname": "- Nguyên giá",
       "publishNormCode": "228",
-      "value": 2132550000,
+      "value": 192265486000,
       "normId": 129
     },
     {
       "keyname": "- Giá trị hao mòn lũy kế",
       "publishNormCode": "229",
-      "value": 0,
+      "value": -4758687838,
       "normId": 130
     },
     {
@@ -301,25 +301,25 @@
     {
       "keyname": "IV. Tài sản dở dang dài hạn",
       "publishNormCode": "240",
-      "value": 0,
+      "value": 974692877306,
       "normId": 938
     },
     {
       "keyname": "1. Chi phí sản xuất, kinh doanh dở dang dài hạn",
       "publishNormCode": "241",
-      "value": 0,
+      "value": 13232800,
       "normId": 939
     },
     {
       "keyname": "2. Chi phí xây dựng cơ bản dở dang",
       "publishNormCode": "242",
-      "value": 0,
+      "value": 974679644506,
       "normId": 131
     },
     {
       "keyname": "V. Đầu tư tài chính dài hạn",
       "publishNormCode": "250",
-      "value": 0,
+      "value": 250000000,
       "normId": 135
     },
     {
@@ -349,25 +349,25 @@
     {
       "keyname": "5. Đầu tư nắm giữ đến ngày đáo hạn",
       "publishNormCode": "255",
-      "value": 0,
+      "value": 250000000,
       "normId": 952
     },
     {
       "keyname": "VI. Tài sản dài hạn khác",
       "publishNormCode": "260",
-      "value": 9912514356,
+      "value": 551289235299,
       "normId": 141
     },
     {
       "keyname": "1. Chi phí trả trước dài hạn",
       "publishNormCode": "261",
-      "value": 9912514356,
+      "value": 542004025490,
       "normId": 142
     },
     {
       "keyname": "2. Tài sản thuế thu nhập hoãn lại",
       "publishNormCode": "262",
-      "value": 0,
+      "value": 6558830478,
       "normId": 143
     },
     {
@@ -385,56 +385,56 @@
     {
       "keyname": "5. Lợi thế thương mại",
       "publishNormCode": "269",
-      "value": 0,
+      "value": 2726379331,
       "normId": 140
     },
     {
       "keyname": "TỔNG CỘNG TÀI SẢN",
       "publishNormCode": "270",
-      "value": 116642657192,
+      "value": 6377582813470,
       "normId": 145
     },
     { "keyname": "NGUỒN VỐN", "publishNormCode": ".", "value": 0 },
     {
       "keyname": "C. NỢ PHẢI TRẢ",
       "publishNormCode": "300",
-      "value": 131557849192,
+      "value": 4463193828103,
       "normId": 147
     },
     {
       "keyname": "I. Nợ ngắn hạn",
       "publishNormCode": "310",
-      "value": 131547849192,
+      "value": 3276925452323,
       "normId": 148
     },
     {
       "keyname": "1. Phải trả người bán ngắn hạn",
       "publishNormCode": "311",
-      "value": 37123163364,
+      "value": 2764925941366,
       "normId": 149
     },
     {
       "keyname": "2. Người mua trả tiền trước ngắn hạn",
       "publishNormCode": "312",
-      "value": 29679822580,
+      "value": 1972612308,
       "normId": 150
     },
     {
       "keyname": "3. Thuế và các khoản phải nộp nhà nước",
       "publishNormCode": "313",
-      "value": 12517922757,
+      "value": 7106538938,
       "normId": 151
     },
     {
       "keyname": "4. Phải trả người lao động",
       "publishNormCode": "314",
-      "value": 5962954372,
+      "value": 16005534469,
       "normId": 152
     },
     {
       "keyname": "5. Chi phí phải trả ngắn hạn",
       "publishNormCode": "315",
-      "value": 3270567946,
+      "value": 64515802499,
       "normId": 153
     },
     {
@@ -452,19 +452,19 @@
     {
       "keyname": "8. Doanh thu chưa thực hiện ngắn hạn",
       "publishNormCode": "318",
-      "value": 41363635,
+      "value": 0,
       "normId": 884
     },
     {
       "keyname": "9. Phải trả ngắn hạn khác",
       "publishNormCode": "319",
-      "value": 12960794630,
+      "value": 12948834766,
       "normId": 156
     },
     {
       "keyname": "10. Vay và nợ thuê tài chính ngắn hạn",
       "publishNormCode": "320",
-      "value": 29991259908,
+      "value": 409450187977,
       "normId": 289
     },
     {
@@ -494,7 +494,7 @@
     {
       "keyname": "II. Nợ dài hạn",
       "publishNormCode": "330",
-      "value": 10000000,
+      "value": 1186268375780,
       "normId": 307
     },
     {
@@ -536,19 +536,19 @@
     {
       "keyname": "7. Phải trả dài hạn khác",
       "publishNormCode": "337",
-      "value": 10000000,
+      "value": 0,
       "normId": 160
     },
     {
       "keyname": "8. Vay và nợ thuê tài chính dài hạn",
       "publishNormCode": "338",
-      "value": 0,
+      "value": 766777833942,
       "normId": 308
     },
     {
       "keyname": "9. Trái phiếu chuyển đổi",
       "publishNormCode": "339",
-      "value": 0,
+      "value": 417686904447,
       "normId": 946
     },
     {
@@ -560,7 +560,7 @@
     {
       "keyname": "11. Thuế thu nhập hoãn lại phải trả",
       "publishNormCode": "341",
-      "value": 0,
+      "value": 1803637391,
       "normId": 161
     },
     {
@@ -578,19 +578,19 @@
     {
       "keyname": "D.VỐN CHỦ SỞ HỮU",
       "publishNormCode": "400",
-      "value": -14915192000,
+      "value": 1914388985367,
       "normId": 164
     },
     {
       "keyname": "I. Vốn chủ sở hữu",
       "publishNormCode": "410",
-      "value": -14915192000,
+      "value": 1914388985367,
       "normId": 165
     },
     {
       "keyname": "1. Vốn góp của chủ sở hữu",
       "publishNormCode": "411",
-      "value": 18935400000,
+      "value": 1435200000000,
       "normId": 166
     },
     {
@@ -614,7 +614,7 @@
     {
       "keyname": "3. Quyền chọn chuyển đổi trái phiếu",
       "publishNormCode": "413",
-      "value": 0,
+      "value": 161135571787,
       "normId": 948
     },
     {
@@ -626,7 +626,7 @@
     {
       "keyname": "5. Cổ phiếu quỹ",
       "publishNormCode": "415",
-      "value": -3400000,
+      "value": 0,
       "normId": 169
     },
     {
@@ -644,7 +644,7 @@
     {
       "keyname": "8. Quỹ đầu tư phát triển",
       "publishNormCode": "418",
-      "value": 2015613033,
+      "value": 0,
       "normId": 172
     },
     {
@@ -656,25 +656,25 @@
     {
       "keyname": "10. Quỹ khác thuộc vốn chủ sở hữu",
       "publishNormCode": "420",
-      "value": 665619980,
+      "value": 0,
       "normId": 174
     },
     {
       "keyname": "11. Lợi nhuận sau thuế chưa phân phối",
       "publishNormCode": "421",
-      "value": -36528425013,
+      "value": 310048762876,
       "normId": 175
     },
     {
       "keyname": "- LNST chưa phân phối lũy kế đến cuối kỳ trước",
       "publishNormCode": "421a",
-      "value": -29033397311,
+      "value": 298474938661,
       "normId": 949
     },
     {
       "keyname": "- LNST chưa phân phối kỳ này",
       "publishNormCode": "421b",
-      "value": -7495027702,
+      "value": 11573824215,
       "normId": 950
     },
     {
@@ -686,7 +686,7 @@
     {
       "keyname": "13. Lợi ích cổ đông không kiểm soát",
       "publishNormCode": "429",
-      "value": 0,
+      "value": 8004650704,
       "normId": 958
     },
     {
@@ -710,59 +710,59 @@
     {
       "keyname": "TỔNG CỘNG NGUỒN VỐN",
       "publishNormCode": "440",
-      "value": 116642657192,
+      "value": 6377582813470,
       "normId": 181
     },
     {
       "keyname": "1. Doanh thu bán hàng và cung cấp dịch vụ",
       "publishNormCode": "01",
-      "value": 11529410184,
+      "value": 2407571142210,
       "normId": 182
     },
     {
       "keyname": "2. Các khoản giảm trừ doanh thu",
       "publishNormCode": "02",
-      "value": 0,
+      "value": 1141052109,
       "normId": 455
     },
     {
       "keyname": "3. Doanh thu thuần về bán hàng và cung cấp dịch vụ (10 = 01 - 02)",
       "publishNormCode": "10",
-      "value": 11529410184,
+      "value": 2406430090101,
       "normId": 346
     },
     {
       "keyname": "4. Giá vốn hàng bán",
       "publishNormCode": "11",
-      "value": 11466697083,
+      "value": 2250939244663,
       "normId": 183
     },
     {
       "keyname": "5. Lợi nhuận gộp về bán hàng và cung cấp dịch vụ(20=10-11)",
       "publishNormCode": "20",
-      "value": 62713101,
+      "value": 155490845438,
       "normId": 350
     },
     {
       "keyname": "6. Doanh thu hoạt động tài chính",
       "publishNormCode": "21",
-      "value": 1625455,
+      "value": 23477818832,
       "normId": 184
     },
     {
       "keyname": "7. Chi phí tài chính",
       "publishNormCode": "22",
-      "value": 2372419437,
+      "value": 65097177124,
       "normId": 185
     },
     {
       "keyname": "- Trong đó: Chi phí lãi vay",
       "publishNormCode": "23",
-      "value": 2372419437,
+      "value": 61922025842,
       "normId": 186
     },
     {
-      "keyname": "8. Phần lãi lỗ trong công ty liên doanh, liên kết",
+      "keyname": "8. Phần Lãi lỗ trong công ty liên doanh, liên kết",
       "publishNormCode": "24",
       "value": 0,
       "normId": 957
@@ -770,113 +770,113 @@
     {
       "keyname": "9. Chi phí bán hàng",
       "publishNormCode": "25",
-      "value": 50540770,
+      "value": 44504510814,
       "normId": 187
     },
     {
       "keyname": "10. Chi phí quản lý doanh nghiệp",
       "publishNormCode": "26",
-      "value": 4009150760,
+      "value": 44359366864,
       "normId": 188
     },
     {
       "keyname": "11. Lợi nhuận thuần từ hoạt động kinh doanh{30=20+(21-22) + 24 - (25+26)}",
       "publishNormCode": "30",
-      "value": -6367772411,
+      "value": 25007609468,
       "normId": 189
     },
     {
       "keyname": "12. Thu nhập khác",
       "publishNormCode": "31",
-      "value": 604874165,
+      "value": 672795019,
       "normId": 190
     },
     {
       "keyname": "13. Chi phí khác",
       "publishNormCode": "32",
-      "value": 1732129456,
+      "value": 7406697497,
       "normId": 191
     },
     {
       "keyname": "14. Lợi nhuận khác(40=31-32)",
       "publishNormCode": "40",
-      "value": -1127255291,
+      "value": -6733902478,
       "normId": 192
     },
     {
       "keyname": "15. Tổng lợi nhuận kế toán trước thuế(50=30+40)",
       "publishNormCode": "50",
-      "value": -7495027702,
+      "value": 18273706990,
       "normId": 194
     },
     {
       "keyname": "16. Chi phí thuế TNDN hiện hành",
       "publishNormCode": "51",
-      "value": 0,
+      "value": 7272255145,
       "normId": 501
     },
     {
       "keyname": "17. Chi phí thuế TNDN hoãn lại",
       "publishNormCode": "52",
-      "value": 0,
+      "value": -1783901821,
       "normId": 502
     },
     {
       "keyname": "18. Lợi nhuận sau thuế thu nhập doanh nghiệp(60=50-51-52)",
       "publishNormCode": "60",
-      "value": -7495027702,
+      "value": 12785353666,
       "normId": 195
     },
     {
-      "keyname": "19. Lợi nhuận sau thuế công ty mẹ",
+      "keyname": "19. Lợi nhuận sau thuế của công ty mẹ",
       "publishNormCode": "61",
-      "value": 0,
+      "value": 11573824215,
       "normId": 197
     },
     {
-      "keyname": "20. Lợi nhuận sau thuế công ty mẹ không kiểm soát",
+      "keyname": "20.Lợi nhuận sau thuế công ty mẹ không kiểm soát",
       "publishNormCode": "62",
-      "value": 0,
+      "value": 1211529451,
       "normId": 196
     },
     {
       "keyname": "21. Lãi cơ bản trên cổ phiếu(*)",
       "publishNormCode": "70",
-      "value": -3959,
+      "value": 81,
       "normId": 198
     },
     {
       "keyname": "22. Lãi suy giảm trên cổ phiếu (*)",
       "publishNormCode": "71",
-      "value": -3959,
+      "value": 81,
       "normId": 951
     },
     {
       "keyname": "1. Tiền thu từ bán hàng, cung cấp dịch vụ và doanh thu khác",
       "publishNormCode": "01",
-      "value": 15414780807,
+      "value": 0,
       "normId": 241
     },
     {
       "keyname": "2. Tiền chi trả cho người cung cấp hàng hóa và dịch vụ",
       "publishNormCode": "02",
-      "value": -5412661980,
+      "value": 0,
       "normId": 242
     },
     {
       "keyname": "3. Tiền chi trả cho người lao động",
       "publishNormCode": "03",
-      "value": -3496326427,
+      "value": 0,
       "normId": 243
     },
     {
       "keyname": "4. Tiền lãi vay đã trả",
       "publishNormCode": "04",
-      "value": -104891973,
+      "value": 0,
       "normId": 244
     },
     {
-      "keyname": "5. Thuế thu nhập doanh nghiệp đã nộp",
+      "keyname": "5. Tiền chi nộp thuế thu nhập doanh nghiệp",
       "publishNormCode": "05",
       "value": 0,
       "normId": 245
@@ -884,31 +884,31 @@
     {
       "keyname": "6. Tiền thu khác từ hoạt động kinh doanh",
       "publishNormCode": "06",
-      "value": 1649201031,
+      "value": 0,
       "normId": 220
     },
     {
       "keyname": "7. Tiền chi khác cho hoạt động kinh doanh",
       "publishNormCode": "07",
-      "value": -2660477622,
+      "value": 0,
       "normId": 246
     },
     {
       "keyname": "Lưu chuyển tiền thuần từ hoạt động kinh doanh",
       "publishNormCode": "20",
-      "value": 5389623836,
+      "value": 0,
       "normId": 222
     },
     {
       "keyname": "1.Tiền chi để mua sắm, xây dựng TSCĐ và các tài sản dài hạn khác",
       "publishNormCode": "21",
-      "value": -42909091,
+      "value": 0,
       "normId": 224
     },
     {
       "keyname": "2.Tiền thu từ thanh lý, nhượng bán TSCĐ và các tài sản dài hạn khác",
       "publishNormCode": "22",
-      "value": 177054301,
+      "value": 0,
       "normId": 225
     },
     {
@@ -938,13 +938,13 @@
     {
       "keyname": "7.Tiền thu lãi cho vay, cổ tức và lợi nhuận được chia",
       "publishNormCode": "27",
-      "value": 1625455,
+      "value": 0,
       "normId": 230
     },
     {
       "keyname": "Lưu chuyển tiền thuần từ hoạt động đầu tư",
       "publishNormCode": "30",
-      "value": 135770665,
+      "value": 0,
       "normId": 231
     },
     {
@@ -954,25 +954,25 @@
       "normId": 233
     },
     {
-      "keyname": "2.Tiền chi trả vốn góp cho các chủ sở hữu, mua lại cổ phiếu của doanh nghiệp đã phát hành",
+      "keyname": "2. Tiền trả lại vốn góp cho các chủ sở hữu, mua lại cổ phiếu của doanh nghiệp đã phát hành",
       "publishNormCode": "32",
       "value": 0,
       "normId": 234
     },
     {
-      "keyname": "3. Tiền thu từ đi vay",
+      "keyname": "3.Tiền thu từ đi vay",
       "publishNormCode": "33",
-      "value": 54000000,
+      "value": 0,
       "normId": 235
     },
     {
       "keyname": "4.Tiền chi trả nợ gốc vay",
       "publishNormCode": "34",
-      "value": -5508538569,
+      "value": 0,
       "normId": 236
     },
     {
-      "keyname": "5.Tiền chi trả nợ thuê tài chính",
+      "keyname": "5. Tiền chi trả nợ thuê tài chính",
       "publishNormCode": "35",
       "value": 0,
       "normId": 237
@@ -986,19 +986,19 @@
     {
       "keyname": "Lưu chuyển tiền thuần từ hoạt động tài chính",
       "publishNormCode": "40",
-      "value": -5454538569,
+      "value": 0,
       "normId": 239
     },
     {
       "keyname": "Lưu chuyển tiền thuần trong kỳ (50 = 20+30+40)",
       "publishNormCode": "50",
-      "value": 70855932,
+      "value": 0,
       "normId": 247
     },
     {
       "keyname": "Tiền và tương đương tiền đầu kỳ",
       "publishNormCode": "60",
-      "value": 777362720,
+      "value": 0,
       "normId": 248
     },
     {
@@ -1010,19 +1010,19 @@
     {
       "keyname": "Tiền và tương đương tiền cuối kỳ (70 = 50+60+61)",
       "publishNormCode": "70",
-      "value": 848218652,
+      "value": 0,
       "normId": 249
     },
     {
       "keyname": "1. Lợi nhuận trước thuế",
       "publishNormCode": "01",
-      "value": 0,
+      "value": 18273706990,
       "normId": 207
     },
     {
       "keyname": "- Khấu hao TSCĐ và BĐSĐT",
       "publishNormCode": "02",
-      "value": 0,
+      "value": 44943101128,
       "normId": 209
     },
     {
@@ -1034,19 +1034,19 @@
     {
       "keyname": "- Lãi, lỗ chênh lệch tỷ giá hối đoái do đánh giá lại các khoản mục tiền tệ có gốc ngoại tệ",
       "publishNormCode": "04",
-      "value": 0,
+      "value": 15286202,
       "normId": 211
     },
     {
       "keyname": "- Lãi, lỗ từ hoạt động đầu tư",
       "publishNormCode": "05",
-      "value": 0,
+      "value": -32234297241,
       "normId": 212
     },
     {
       "keyname": "- Chi phí lãi vay",
       "publishNormCode": "06",
-      "value": 0,
+      "value": 65077464988,
       "normId": 186
     },
     {
@@ -1058,31 +1058,31 @@
     {
       "keyname": "3. Lợi nhuận từ hoạt động kinh doanh trước thay đổi vốn lưu động",
       "publishNormCode": "08",
-      "value": 0,
+      "value": 96075262067,
       "normId": 213
     },
     {
       "keyname": "- Tăng, giảm các khoản phải thu",
       "publishNormCode": "09",
-      "value": 0,
+      "value": -457138810428,
       "normId": 214
     },
     {
       "keyname": "- Tăng, giảm hàng tồn kho",
       "publishNormCode": "10",
-      "value": 0,
+      "value": -340013116030,
       "normId": 215
     },
     {
       "keyname": "- Tăng, giảm các khoản phải trả (Không kể lãi vay phải trả, thuế thu nhập doanh nghiệp phải nộp)",
       "publishNormCode": "11",
-      "value": 0,
+      "value": 486390920997,
       "normId": 216
     },
     {
       "keyname": "- Tăng, giảm chi phí trả trước",
       "publishNormCode": "12",
-      "value": 0,
+      "value": -54403163418,
       "normId": 217
     },
     {
@@ -1093,13 +1093,13 @@
     {
       "keyname": "- Tiền lãi vay đã trả",
       "publishNormCode": "14",
-      "value": 0,
+      "value": -48486770779,
       "normId": 218
     },
     {
       "keyname": "- Thuế thu nhập doanh nghiệp đã nộp",
       "publishNormCode": "15",
-      "value": 0,
+      "value": -57951899292,
       "normId": 219
     },
     {
@@ -1117,31 +1117,31 @@
     {
       "keyname": "Lưu chuyển tiền thuần từ hoạt động kinh doanh",
       "publishNormCode": "20",
-      "value": 0,
+      "value": -375527576883,
       "normId": 222
     },
     {
       "keyname": "1.Tiền chi để mua sắm, xây dựng TSCĐ và các tài sản dài hạn khác",
       "publishNormCode": "21",
-      "value": 0,
+      "value": -293367078223,
       "normId": 224
     },
     {
       "keyname": "2.Tiền thu từ thanh lý, nhượng bán TSCĐ và các tài sản dài hạn khác",
       "publishNormCode": "22",
-      "value": 0,
+      "value": 23856502596,
       "normId": 225
     },
     {
       "keyname": "3.Tiền chi cho vay, mua các công cụ nợ của đơn vị khác",
       "publishNormCode": "23",
-      "value": 0,
+      "value": -232000000000,
       "normId": 226
     },
     {
       "keyname": "4.Tiền thu hồi cho vay, bán lại các công cụ nợ của đơn vị khác",
       "publishNormCode": "24",
-      "value": 0,
+      "value": 1184324989,
       "normId": 227
     },
     {
@@ -1159,19 +1159,19 @@
     {
       "keyname": "7.Tiền thu lãi cho vay, cổ tức và lợi nhuận được chia",
       "publishNormCode": "27",
-      "value": 0,
+      "value": 8241707915,
       "normId": 230
     },
     {
       "keyname": "Lưu chuyển tiền thuần từ hoạt động đầu tư",
       "publishNormCode": "30",
-      "value": 0,
+      "value": -492084542723,
       "normId": 231
     },
     {
       "keyname": "1.Tiền thu từ phát hành cổ phiếu, nhận vốn góp của chủ sở hữu",
       "publishNormCode": "31",
-      "value": 0,
+      "value": 161135571787,
       "normId": 233
     },
     {
@@ -1183,17 +1183,17 @@
     {
       "keyname": "3.Tiền thu từ đi vay",
       "publishNormCode": "33",
-      "value": 0,
+      "value": 987214500224,
       "normId": 235
     },
     {
-      "keyname": "4.Tiền trả nợ gốc vay",
+      "keyname": "4.Tiền chi trả nợ gốc vay",
       "publishNormCode": "34",
-      "value": 0,
+      "value": -331422535251,
       "normId": 236
     },
     {
-      "keyname": "5.Tiền chi trả nợ gốc thuê tài chính",
+      "keyname": "5.Tiền trả nợ gốc thuê tài chính",
       "publishNormCode": "35",
       "value": 0,
       "normId": 237
@@ -1205,33 +1205,38 @@
       "normId": 238
     },
     {
+      "keyname": "7. Tiền thu từ vốn góp của cổ đông không kiểm soát",
+      "publishNormCode": "..37",
+      "value": 0
+    },
+    {
       "keyname": "Lưu chuyển tiền thuần từ hoạt động tài chính",
       "publishNormCode": "40",
-      "value": 0,
+      "value": 816927536760,
       "normId": 239
     },
     {
       "keyname": "Lưu chuyển tiền thuần trong kỳ (50 = 20+30+40)",
       "publishNormCode": "50",
-      "value": 0,
+      "value": -50684582846,
       "normId": 247
     },
     {
       "keyname": "Tiền và tương đương tiền đầu kỳ",
       "publishNormCode": "60",
-      "value": 0,
+      "value": 151374475776,
       "normId": 248
     },
     {
       "keyname": "Ảnh hưởng của thay đổi tỷ giá hối đoái quy đổi ngoại tệ",
       "publishNormCode": "61",
-      "value": 0,
+      "value": 1380368,
       "normId": 240
     },
     {
       "keyname": "Tiền và tương đương tiền cuối kỳ (70 = 50+60+61)",
       "publishNormCode": "70",
-      "value": 0,
+      "value": 100691273298,
       "normId": 249
     }
   ]
