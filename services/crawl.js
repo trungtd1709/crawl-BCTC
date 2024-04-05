@@ -24,6 +24,7 @@ const {
   auditStatusConst,
   reportNameTableClassname,
   startPagination,
+  paginationTableId,
 } = require("../shared/constant.js");
 const db = require("../models/index.js");
 const {
@@ -64,9 +65,11 @@ const crawlData = async () => {
   try {
     await driver.get(urlToCrawl);
     await waitPageLoad(driver);
+    await delay(2);
+    const lastPagination = await findLastPagination({ driver });
     let rowIndex = 0;
     // await changeDateRange(driver, "10/10/2023", "05/11/2023");
-    while (rowIndex < 15) {
+    while (rowIndex < 15 && currentPagination > lastPagination) {
       // <tr> là các thẻ chứa link báo cáo
       if (currentPagination > 1) {
         await changePagination(driver, currentPagination);
@@ -127,7 +130,7 @@ const startCrawlDetail = async (driver) => {
       isAdjusted,
       reportTermId,
       unitedStatusId,
-      yearPeriod
+      yearPeriod,
     } = await getReportTitleInfo({ driver });
 
     let reportDataDetails =
@@ -400,7 +403,10 @@ const getDetailTableData = async ({ rowsDataEl, reportComponentId }) => {
             continue outerLoop;
           }
           // console.log("[publishNormCode]:", publishNormCode);
-          reportNormId = await getReportNormId({ publishNormCode, reportComponentId });
+          reportNormId = await getReportNormId({
+            publishNormCode,
+            reportComponentId,
+          });
           break;
 
         // Cột có số cuối kỳ
@@ -481,6 +487,15 @@ const checkExistText = async ({ driver, text }) => {
   return elements.length > 0;
 };
 
-
+/**
+ * @param {{ driver: import('selenium-webdriver').WebDriver }} params
+ */
+const findLastPagination = async ({ driver }) => {
+  let table = await driver.findElement(By.id(paginationTableId));
+  const tdTags = await table.findElements(By.css("td"));
+  const lastPaginationEl = tdTags[tdTags.length - 1];
+  const lastPagination = parseInt(await lastPaginationEl.getText());
+  return lastPagination;
+};
 
 module.exports = { crawlData };

@@ -85,4 +85,5 @@ module.exports = {
   unitedStatusIdConst,
   reportNameTableClassname,
   startPagination,
+  paginationTableId,
 };
