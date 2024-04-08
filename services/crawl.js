@@ -67,13 +67,18 @@ const crawlData = async () => {
     await waitPageLoad(driver);
     await delay(2);
     const lastPagination = await findLastPagination({ driver });
+    // const lastPagination = 2;
     let rowIndex = 0;
+    let loopIndex = 1;
+    const companyPerPage = 15;
     // await changeDateRange(driver, "10/10/2023", "05/11/2023");
-    while (rowIndex < 15 && currentPagination > lastPagination) {
+    while (rowIndex < companyPerPage && currentPagination <= lastPagination) {
       // <tr> là các thẻ chứa link báo cáo
-      if (currentPagination > 1) {
+      if (currentPagination > 1 && rowIndex != 0) {
         await changePagination(driver, currentPagination);
+        await waitPageLoad(driver);
       }
+      await delay(3);
 
       const trElements = await driver.findElements(By.xpath("//*[@_afrrk]"));
       // tìm thẻ <td> thứ 2 trong mảng, thẻ này chứa link báo cáo
@@ -94,18 +99,22 @@ const crawlData = async () => {
       // break;
       //   }
       // }
-      if (rowIndex === 14) {
+      if (rowIndex === companyPerPage - 1) {
         rowIndex = 0;
         currentPagination++;
         await changePagination(driver, currentPagination);
-        await delay(5);
+        await waitPageLoad(driver);
+        await delay(3);
         continue;
       }
       rowIndex++;
+      loopIndex++;
+      console.log(loopIndex);
     }
   } catch (error) {
-    console.error(now() + "[Error]:" + error.message);
+    console.error(now() + "- [Error]:" + error.message);
   } finally {
+    console.log(now(), " [FINISH CRAWLING, CLOSING BROWSER ...]");
     await driver.quit();
   }
 };
@@ -357,7 +366,7 @@ const getReportGeneralInfo = async ({ driver, reportTermType }) => {
         reportDate = dataValue;
         break;
       default:
-        console.log("default");
+      // console.log("default");
     }
   }
 

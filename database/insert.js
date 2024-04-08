@@ -3,7 +3,15 @@ const _ = require("lodash");
 const { formatDate } = require("../shared/utils");
 
 const insertReportToDB = async ({ reportData }) => {
-  let { stockCode, reportTermId, yearPeriod, reportDataDetails } = reportData;
+  let {
+    stockCode,
+    reportTermId,
+    yearPeriod,
+    auditStatusId,
+    isAdjusted,
+    unitedStatusId,
+    reportDataDetails,
+  } = reportData;
 
   reportData.reportDate = formatDate(reportData.reportDate);
   const t = await db.sequelize.transaction();
@@ -13,11 +21,15 @@ const insertReportToDB = async ({ reportData }) => {
         stockCode,
         reportTermId,
         yearPeriod,
+        auditStatusId,
+        isAdjusted,
+        unitedStatusId,
       },
       transaction: t,
     });
 
     if (!_.isEmpty(dbReport)) {
+      console.log("[Báo cáo đã tồn tại trong database]:");
       //   await db.ReportData.update({}, { transaction: t });
     } else {
       const newReport = await db.ReportData.create(reportData, {
