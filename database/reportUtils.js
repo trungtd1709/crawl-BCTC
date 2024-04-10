@@ -75,13 +75,26 @@ const getReportNormId = async ({ publishNormCode, reportComponentId }) => {
       publishNormCode,
       reportComponentId,
     };
-    await writeToFile({
-      filename: "missing_report_norm.json",
-      content: `${JSON.stringify(missingReportNorm)},`,
-    });
+    // await writeToFile({
+    //   filename: "missing_report_norm.json",
+    //   content: `${JSON.stringify(missingReportNorm)},`,
+    // });
   }
   const { reportNormId, normId } = reportNorm;
   return reportNormId;
+};
+
+const getReportData = async (whereParams = {}) => {
+  // console.log("[whereParams]:", whereParams);
+  const report = await db.ReportData.findOne({
+    where: whereParams,
+    include: [{ model: db.ReportDataDetail, as: "reportDataDetails" }],
+  });
+  if (!_.isEmpty(report)) {
+    return report.toJSON();
+  } else {
+    return {};
+  }
 };
 
 module.exports = {
@@ -89,4 +102,5 @@ module.exports = {
   getReportComponentTypeId,
   getReportComponentId,
   getReportNormId,
+  getReportData,
 };

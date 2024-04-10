@@ -44,6 +44,8 @@ const reportTermIdConst = {
   quy2: 3,
   quy3: 4,
   quy4: 5,
+  // "6thang": 6,
+  "9thang": 12,
   banNien: 9,
 };
 
@@ -59,6 +61,13 @@ const unitedStatusIdConst = {
   tongHop: 0,
   rieng: 1,
   me: 2,
+};
+
+const tableOrderConst = {
+  BCDKT: 1,
+  KQKD: 2,
+  LCTT: 3,
+  LCGT: 4,
 };
 
 module.exports = {
@@ -86,4 +95,5 @@ module.exports = {
   reportNameTableClassname,
   startPagination,
   paginationTableId,
+  tableOrderConst,
 };

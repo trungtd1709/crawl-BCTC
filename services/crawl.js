@@ -25,6 +25,7 @@ const {
   reportNameTableClassname,
   startPagination,
   paginationTableId,
+  tableOrderConst,
 } = require("../shared/constant.js");
 const db = require("../models/index.js");
 const {
@@ -82,12 +83,14 @@ const crawlData = async () => {
 
       const trElements = await driver.findElements(By.xpath("//*[@_afrrk]"));
       // tìm thẻ <td> thứ 2 trong mảng, thẻ này chứa link báo cáo
-      const tdElements = await trElements[rowIndex].findElements(By.css("td"));
+      const reportLinkElement = await trElements[rowIndex].findElements(
+        By.css("td")
+      );
       // for await (const [index, tdElement] of tdElements.entries()) {
 
       //   if (index === 1) {
       // Find and click the anchor element
-      await navigateToReportDetail(tdElements[1]);
+      await navigateToReportDetail(reportLinkElement[1]);
       await waitPageLoad(driver);
       await delay(3);
       await startCrawlDetail(driver);
@@ -142,10 +145,11 @@ const startCrawlDetail = async (driver) => {
       yearPeriod,
     } = await getReportTitleInfo({ driver });
 
-    let reportDataDetails =
-      (await getAllTableData({ driver, reportTemplateId })) ?? [];
+    let allTableData =
+      (await getAllTableData({ driver, reportTemplateId, reportTermId })) ?? [];
 
-    const reportData = {
+    // một trang báo cáo trên CBTT phải chia làm 2 report data với termId khác nhau
+    let reportData = {
       businessPermit,
       stockCode,
       companyName,
@@ -155,17 +159,73 @@ const startCrawlDetail = async (driver) => {
       auditStatusId,
       reportDate,
       isAdjusted,
-      reportTermId,
+      // reportTermId,
       unitedStatusId,
-      reportDataDetails,
+      // reportDataDetails,
     };
+
+    let secondReportData = reportData;
+
+    reportData.reportTermId = reportTermId;
+
+    if (
+      reportTermId == reportTermIdConst.quy1 ||
+      reportTermId == reportTermIdConst.banNien ||
+      reportTermId == reportTermIdConst.nam
+    ) {
+      reportData.reportDataDetails = allTableData;
+    }
+
+    if (
+      reportTermId == reportTermIdConst.quy2 ||
+      reportTermId == reportTermIdConst.quy3 ||
+      reportTermId == reportTermIdConst.quy4
+    ) {
+      let BCDKTData = allTableData[tableOrderConst.BCDKT - 1];
+      let KQKDData = allTableData[tableOrderConst.KQKD - 1];
+      let LCTTData = allTableData[tableOrderConst.LCTT - 1];
+      let LCGTData = allTableData[tableOrderConst.LCGT - 1];
+
+      const BCDKTData0 = BCDKTData.forEach((obj) => (obj.value = 0));
+      const KQKDData0 = KQKDData.forEach((obj) => (obj.value = 0));
+      const LCTTData0 = LCTTData.forEach((obj) => (obj.value = 0));
+      const LCGTData0 = LCGTData.forEach((obj) => (obj.value = 0));
+
+      reportData.reportDataDetails = [
+        ...BCDKTData,
+        ...KQKDData,
+        ...LCTTData0,
+        ...LCGTData0,
+      ];
+
+      secondReportData.reportDataDetails = [
+        ...BCDKTData0,
+        ...KQKDData0,
+        ...LCTTData,
+        ...LCGTData,
+      ];
+
+      switch (reportTermId) {
+        case reportTermIdConst.quy2:
+          secondReportData.reportTermId = reportTermIdConst.banNien;
+          break;
+        case reportTermIdConst.quy3:
+          secondReportData.reportTermId = reportTermIdConst["9thang"];
+          break;
+        case reportTermIdConst.quy4:
+          secondReportData.reportTermId = reportTermIdConst.nam;
+          break;
+        default:
+      }
+      await insertReportToDB({ reportData: secondReportData });
+    }
 
     await insertReportToDB({ reportData });
 
-    await writeToFile({
-      content: JSON.stringify(reportData),
-      filename: "result.txt",
-    });
+    // await writeToFile({
+    //   content: JSON.stringify(reportData),
+    //   filename: "result.txt",
+    // });
 
     console.log(
       now() +
@@ -191,7 +251,7 @@ const startCrawlDetail = async (driver) => {
   }
 };
 
-const getAllTableData = async ({ driver, reportTemplateId }) => {
+const getAllTableData = async ({ driver, reportTemplateId, reportTermId }) => {
   let tableOrder = 1;
   let reportComponentId;
   let singleTableData = [];
@@ -210,6 +270,7 @@ const getAllTableData = async ({ driver, reportTemplateId }) => {
       driver,
       tableOrder,
       reportComponentId,
+      reportTermId,
     });
     allTableData = [...allTableData, ...singleTableData];
     // allTableData.push(singleTableData);
@@ -225,11 +286,17 @@ const getSingleTableData = async ({
   driver,
   tableOrder,
   reportComponentId,
+  reportTermId,
 }) => {
   const tableId = getTableId(tableOrder);
   const tableEl = await driver.findElement(By.id(tableId));
   const rowsDataEl = await tableEl.findElements(By.css("tr"));
-  const tableData = await getDetailTableData({ rowsDataEl, reportComponentId });
+  const tableData = await getDetailTableData({
+    rowsDataEl,
+    reportComponentId,
+    reportTermId,
+    tableOrder,
+  });
   return tableData;
 };
 
@@ -390,7 +457,11 @@ async function waitForElementVisibleById(driver, elId) {
 }
 
 // lấy thông tin chi tiết của table
-const getDetailTableData = async ({ rowsDataEl, reportComponentId }) => {
+const getDetailTableData = async ({
+  rowsDataEl,
+  reportComponentId,
+  tableOrder,
+}) => {
   let tableData = [];
   outerLoop: for await (const [rowIndex, rowDataEl] of rowsDataEl.entries()) {
     if (rowIndex === 0) continue;

@@ -4,12 +4,22 @@ const db = require("./models");
 const { connectDB, syncDB } = require("./database");
 const { crawlData } = require("./services/crawl");
 const { CronJob } = require("cron");
+const { getReportData } = require("./database/reportUtils");
 
 const start = async () => {
   connectDB();
   // await syncDB();
   // await inserReportXLSX();
   await crawlData();
+  // const result = await getReportData({
+  //   reportTermId: 1,
+  //   auditStatusId: 10,
+  //   yearPeriod: 2023,
+  //   isAdjusted: 1,
+  //   unitedStatusId: 0,
+  //   stockCode: "VHE",
+  // });
+  // console.log(result);
 };
 
 // const job = new CronJob(
@@ -21,7 +31,6 @@ const start = async () => {
 //   true,
 //   "Asia/Bangkok"
 // );
-
 
 // const app = express();
 
