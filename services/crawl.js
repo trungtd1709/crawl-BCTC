@@ -168,12 +168,22 @@ const startCrawlDetail = async (driver) => {
 
     reportData.reportTermId = reportTermId;
 
+    let BCDKTData = allTableData[tableOrderConst.BCDKT - 1];
+    let KQKDData = allTableData[tableOrderConst.KQKD - 1];
+    let LCTTData = allTableData[tableOrderConst.LCTT - 1];
+    let LCGTData = allTableData[tableOrderConst.LCGT - 1];
+
     if (
       reportTermId == reportTermIdConst.quy1 ||
       reportTermId == reportTermIdConst.banNien ||
       reportTermId == reportTermIdConst.nam
     ) {
-      reportData.reportDataDetails = allTableData;
+      reportData.reportDataDetails = [
+        ...BCDKTData,
+        ...KQKDData,
+        ...LCTTData,
+        ...LCGTData,
+      ];
     }
 
     if (
@@ -181,11 +191,6 @@ const startCrawlDetail = async (driver) => {
       reportTermId == reportTermIdConst.quy3 ||
       reportTermId == reportTermIdConst.quy4
     ) {
-      let BCDKTData = allTableData[tableOrderConst.BCDKT - 1];
-      let KQKDData = allTableData[tableOrderConst.KQKD - 1];
-      let LCTTData = allTableData[tableOrderConst.LCTT - 1];
-      let LCGTData = allTableData[tableOrderConst.LCGT - 1];
-
       const BCDKTData0 = BCDKTData.forEach((obj) => (obj.value = 0));
       const KQKDData0 = KQKDData.forEach((obj) => (obj.value = 0));
       const LCTTData0 = LCTTData.forEach((obj) => (obj.value = 0));
