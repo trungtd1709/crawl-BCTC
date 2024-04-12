@@ -531,7 +531,8 @@ const getDetailTableData = async ({
     if (publishNormCode && reportNormId && !_.isNaN(value) && value) {
       tableData.push(objectData);
     } else {
-      console.log("[invalid objectData]:", objectData);
+      // do nothing
+      // console.log("[invalid objectData]:", objectData);
     }
   }
   // console.log("[tableData]:", tableData);
