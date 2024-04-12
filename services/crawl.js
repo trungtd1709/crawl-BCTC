@@ -122,7 +122,7 @@ const crawlData = async () => {
       }
       rowIndex++;
       loopIndex++;
-      console.log(loopIndex);
+      console.log("[STT]:", loopIndex);
     }
   } catch (error) {
     console.error(now() + "- [Error]:" + error.message);
