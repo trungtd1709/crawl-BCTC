@@ -43,7 +43,7 @@ const {
   getTableCode,
 } = require("./crawl.util.js");
 const { insertReportToDB } = require("../database/insert.js");
-const chrome = require('selenium-webdriver/chrome');
+const chrome = require("selenium-webdriver/chrome");
 
 const waitPageLoad = async (driver) => {
   try {
@@ -61,8 +61,10 @@ const waitPageLoad = async (driver) => {
 
 const crawlData = async () => {
   let options = new chrome.Options();
-  options.addArguments('--headless');
-  options.addArguments('--disable-gpu');
+  options.addArguments("--headless");
+  options.addArguments("--disable-gpu");
+  options.addArguments("--no-sandbox");
+  options.addArguments("--disable-dev-shm-usage");
 
   const driver = await new Builder()
     .forBrowser("chrome")
