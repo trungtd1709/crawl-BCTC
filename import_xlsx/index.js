@@ -100,7 +100,7 @@ const insertReportNorm = async () => {
     });
 
     await t.commit();
-    console.log("[INSERT REPORT COMPONENT SUCCESS]");
+    console.log("[INSERT REPORT NORM SUCCESS]");
   } catch (err) {
     await t.rollback();
     console.log("[ERR INSERT REPORT COMPONENT]:", err);

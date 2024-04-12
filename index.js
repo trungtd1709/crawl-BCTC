@@ -7,10 +7,15 @@ const { CronJob } = require("cron");
 const { getReportData } = require("./database/reportUtils");
 
 const start = async () => {
-  connectDB();
-  // await syncDB();
-  // await inserReportXLSX();
-  await crawlData();
+  try {
+    await connectDB();
+    // await syncDB();
+    // await inserReportXLSX();
+    await crawlData();
+  } catch (err) {
+    console.log(err);
+    return;
+  }
   // const result = await getReportData({
   //   reportTermId: 1,
   //   auditStatusId: 10,
@@ -19,7 +24,6 @@ const start = async () => {
   //   unitedStatusId: 0,
   //   stockCode: "VHE",
   // });
-  // console.log(result);
 };
 
 // const job = new CronJob(

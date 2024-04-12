@@ -277,8 +277,8 @@ const getAllTableData = async ({ driver, reportTemplateId, reportTermId }) => {
       reportComponentId,
       reportTermId,
     });
-    allTableData = [...allTableData, ...singleTableData];
-    // allTableData.push(singleTableData);
+    // allTableData = [...allTableData, ...singleTableData];
+    allTableData.push(singleTableData);
     singleTableData = [];
     tableOrder++;
   }
@@ -515,10 +515,13 @@ const getDetailTableData = async ({
       value,
       // numberStartOfTerm,
       reportNormId,
+      lastUpdate: new Date(),
     };
     // console.log("[objectData]:", objectData);
-    if (publishNormCode && reportNormId) {
+    if (publishNormCode && reportNormId && !_.isNaN(value)) {
       tableData.push(objectData);
+    } else {
+      console.log("[invalid objectData]:", objectData);
     }
   }
   // console.log("[tableData]:", tableData);

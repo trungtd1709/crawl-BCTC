@@ -24,7 +24,7 @@ const getReportTermId = ({ reportTermType, quarterPeriod }) => {
   let reportTermId = null;
   switch (reportTermType) {
     case reportTermTypeConst.quarter:
-      switch (quarterPeriod) {
+      switch (parseInt(quarterPeriod)) {
         case 1:
           reportTermId = reportTermIdConst.quy1;
           break;
