@@ -5,6 +5,7 @@ const { connectDB, syncDB } = require("./database");
 const { crawlData } = require("./services/crawl");
 const { CronJob } = require("cron");
 const { getReportData } = require("./database/reportUtils");
+const { calculate } = require("./services/calculate");
 
 const start = async () => {
   try {
@@ -12,6 +13,7 @@ const start = async () => {
     // await syncDB();
     // await inserReportXLSX();
     await crawlData();
+    // await calculate();
   } catch (err) {
     console.log(err);
     return;

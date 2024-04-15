@@ -1,5 +1,5 @@
-const sequelize = require('sequelize');
-const { DataTypes } = require('sequelize');
+const sequelize = require("sequelize");
+const { DataTypes } = require("sequelize");
 
 /**
  *
@@ -9,7 +9,7 @@ const { DataTypes } = require('sequelize');
 // eslint-disable-next-line @typescript-eslint/no-shadow
 module.exports = (sequelize, Sequelize) => {
   const ReportDataDetail = sequelize.define(
-    'reportDataDetails',
+    "reportDataDetails",
     {
       reportDataDetailId: {
         type: DataTypes.INTEGER.UNSIGNED,
@@ -19,18 +19,22 @@ module.exports = (sequelize, Sequelize) => {
       reportDataId: DataTypes.INTEGER.UNSIGNED,
       reportNormId: DataTypes.INTEGER.UNSIGNED,
       value: DataTypes.DOUBLE,
+      value: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true, 
+      },
       lastUpdate: DataTypes.DATE,
     },
     {
       //   timestamps: false,
       indexes: [
         {
-          name: 'reportNormId_reportDataId',
-          fields: ['reportNormId', 'reportNormId'],
+          name: "reportNormId_reportDataId",
+          fields: ["reportNormId", "reportNormId"],
           unique: true,
         },
       ],
-    },
+    }
   );
   return ReportDataDetail;
 };

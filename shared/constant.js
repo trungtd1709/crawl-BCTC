@@ -1,4 +1,4 @@
-const startPagination = 1;
+const startPagination = 36;
 
 const idButtonChangeTab2 = "pt2:KQKD::ti";
 const idButtonChangeTab3 = "pt2:LCTT-TT::ti";
@@ -44,9 +44,10 @@ const reportTermIdConst = {
   quy2: 3,
   quy3: 4,
   quy4: 5,
-  // "6thang": 6,
-  "9thang": 12,
+  "6thangDauNam": 6,
   banNien: 9,
+  "9thangDauNam": 12,
+  "6thangCuoiNam": 18,
 };
 
 const auditStatusConst = {

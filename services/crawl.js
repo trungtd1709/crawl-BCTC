@@ -61,10 +61,10 @@ const waitPageLoad = async (driver) => {
 
 const crawlData = async () => {
   let options = new chrome.Options();
-  options.addArguments("--headless");
-  options.addArguments("--disable-gpu");
-  options.addArguments("--no-sandbox");
-  options.addArguments("--disable-dev-shm-usage");
+  // options.addArguments("--headless");
+  // options.addArguments("--disable-gpu");
+  // options.addArguments("--no-sandbox");
+  // options.addArguments("--disable-dev-shm-usage");
 
   const driver = await new Builder()
     .forBrowser("chrome")
@@ -73,33 +73,31 @@ const crawlData = async () => {
   const urlToCrawl = process.env.WEB_URL_TO_CRAWL;
   let currentPagination = startPagination;
 
-  try {
-    await driver.get(urlToCrawl);
-    await waitPageLoad(driver);
-    await delay(2);
-    const lastPagination = await findLastPagination({ driver });
+  await driver.get(urlToCrawl);
+  await waitPageLoad(driver);
+  await delay(2);
+  const lastPagination = await findLastPagination({ driver });
 
-    // const lastPagination = 2;
-    let rowIndex = 0;
-    let loopIndex = 1;
-    const companyPerPage = 15;
-    // await changeDateRange(driver, "10/10/2023", "05/11/2023");
-    while (rowIndex < companyPerPage && currentPagination <= lastPagination) {
+  // const lastPagination = 2;
+  let rowIndex = 0;
+  let loopIndex = 1;
+  const companyPerPage = 15;
+  // await changeDateRange(driver, "10/10/2023", "05/11/2023");
+  while (rowIndex < companyPerPage && currentPagination <= lastPagination) {
+    try {
       // <tr> là các thẻ chứa link báo cáo
-      if (currentPagination > 1 && rowIndex != 0) {
+      if (currentPagination > 1) {
         await changePagination(driver, currentPagination);
         await waitPageLoad(driver);
       }
       await delay(3);
 
+      await waitForElementVisibleByXPath(driver, "//*[@_afrrk]");
       const trElements = await driver.findElements(By.xpath("//*[@_afrrk]"));
       // tìm thẻ <td> thứ 2 trong mảng, thẻ này chứa link báo cáo
       const reportLinkElement = await trElements[rowIndex].findElements(
         By.css("td")
       );
-      // for await (const [index, tdElement] of tdElements.entries()) {
-
-      //   if (index === 1) {
       // Find and click the anchor element
       await navigateToReportDetail(reportLinkElement[1]);
       await waitPageLoad(driver);
@@ -110,32 +108,27 @@ const crawlData = async () => {
       await driver.get(urlToCrawl);
       await waitPageLoad(driver);
       await delay(1);
-      // break;
-      //   }
-      // }
+      loopIndex++;
       if (rowIndex === companyPerPage - 1) {
         rowIndex = 0;
         currentPagination++;
-        await changePagination(driver, currentPagination);
-        await waitPageLoad(driver);
-        await delay(3);
-        continue;
+      } else {
+        rowIndex++;
       }
-      rowIndex++;
-      loopIndex++;
       console.log("[STT]:", loopIndex);
+    } catch (err) {
+      console.error(now() + "- [Error]:" + err.message);
+      continue;
     }
-  } catch (error) {
-    console.error(now() + "- [Error]:" + error.message);
-  } finally {
-    console.log(now(), " [FINISH CRAWLING, CLOSING BROWSER ...]");
-    await driver.quit();
   }
+
+  console.log(now(), " [FINISH CRAWLING, CLOSING BROWSER ...]");
+  await driver.quit();
 };
 
 const navigateToReportDetail = async (anchorContainerEl) => {
   const anchorElement = await anchorContainerEl.findElement(By.css("a"));
-  const anchorElementText = await anchorElement.getText();
+  console.log("Navigating to report detail ...");
   await anchorElement.click();
 };
 
@@ -202,10 +195,18 @@ const startCrawlDetail = async (driver) => {
       reportTermId == reportTermIdConst.quy3 ||
       reportTermId == reportTermIdConst.quy4
     ) {
-      const BCDKTData0 = BCDKTData.forEach((obj) => (obj.value = 0));
-      const KQKDData0 = KQKDData.forEach((obj) => (obj.value = 0));
-      const LCTTData0 = LCTTData.forEach((obj) => (obj.value = 0));
-      const LCGTData0 = LCGTData.forEach((obj) => (obj.value = 0));
+      const BCDKTData0 = BCDKTData.map((obj) => {
+        return { ...obj, value: 0 };
+      });
+      const KQKDData0 = KQKDData.map(obj => {
+        return { ...obj, value: 0 };
+      });
+      const LCTTData0 = LCTTData.map(obj => {
+        return { ...obj, value: 0 };
+      });
+      const LCGTData0 = LCGTData.map(obj => {
+        return { ...obj, value: 0 };
+      });
 
       reportData.reportDataDetails = [
         ...BCDKTData,
@@ -226,7 +227,7 @@ const startCrawlDetail = async (driver) => {
           secondReportData.reportTermId = reportTermIdConst.banNien;
           break;
         case reportTermIdConst.quy3:
-          secondReportData.reportTermId = reportTermIdConst["9thang"];
+          secondReportData.reportTermId = reportTermIdConst["9thangDauNam"];
           break;
         case reportTermIdConst.quy4:
           secondReportData.reportTermId = reportTermIdConst.nam;
@@ -474,6 +475,15 @@ async function waitForElementVisibleById(driver, elId) {
   return;
 }
 
+async function waitForElementVisibleByXPath(driver, elXPath) {
+  let element = await driver.wait(
+    until.elementLocated(By.xpath(elXPath)),
+    10000
+  );
+  await driver.wait(until.elementIsVisible(element), 10000);
+  return;
+}
+
 // lấy thông tin chi tiết của table
 const getDetailTableData = async ({
   rowsDataEl,
@@ -559,7 +569,7 @@ const changePagination = async (driver, value) => {
   let inputElement = await driver.findElement(By.id(paginationInputId));
   await inputElement.clear();
   await inputElement.sendKeys(value, Key.ENTER);
-  await delay(1);
+  await delay(6);
   return;
 };
 
