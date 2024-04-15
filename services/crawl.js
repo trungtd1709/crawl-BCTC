@@ -61,10 +61,10 @@ const waitPageLoad = async (driver) => {
 
 const crawlData = async () => {
   let options = new chrome.Options();
-  options.addArguments("--headless");
-  options.addArguments("--disable-gpu");
-  options.addArguments("--no-sandbox");
-  options.addArguments("--disable-dev-shm-usage");
+  // options.addArguments("--headless");
+  // options.addArguments("--disable-gpu");
+  // options.addArguments("--no-sandbox");
+  // options.addArguments("--disable-dev-shm-usage");
 
   const driver = await new Builder()
     .forBrowser("chrome")
@@ -78,6 +78,7 @@ const crawlData = async () => {
     await waitPageLoad(driver);
     await delay(2);
     const lastPagination = await findLastPagination({ driver });
+
     // const lastPagination = 2;
     let rowIndex = 0;
     let loopIndex = 1;
@@ -304,6 +305,7 @@ const getSingleTableData = async ({
   reportTermId,
 }) => {
   const tableId = getTableId(tableOrder);
+  await waitForElementVisibleById(driver, tableId);
   const tableEl = await driver.findElement(By.id(tableId));
   const rowsDataEl = await tableEl.findElements(By.css("tr"));
   const tableData = await getDetailTableData({
@@ -319,6 +321,7 @@ const getSingleTableData = async ({
  * @param {{ driver: import('selenium-webdriver').WebDriver }} params
  */
 const getReportTitleInfo = async ({ driver }) => {
+  await waitForElementVisibleById(driver, companyNameTableId);
   const companyNameTableEl = await driver.findElement(
     By.id(companyNameTableId)
   );
@@ -552,6 +555,7 @@ const changeTab = async (driver, tableOrder) => {
 
 const changePagination = async (driver, value) => {
   console.log(now() + ` - [ChangePagination]: to page ${value} !!!`);
+  await waitForElementVisibleById(driver, paginationInputId);
   let inputElement = await driver.findElement(By.id(paginationInputId));
   await inputElement.clear();
   await inputElement.sendKeys(value, Key.ENTER);
@@ -590,6 +594,7 @@ const checkExistText = async ({ driver, text }) => {
  * @param {{ driver: import('selenium-webdriver').WebDriver }} params
  */
 const findLastPagination = async ({ driver }) => {
+  await waitForElementVisibleById(driver, paginationTableId);
   let table = await driver.findElement(By.id(paginationTableId));
   const tdTags = await table.findElements(By.css("td"));
   const lastPaginationEl = tdTags[tdTags.length - 1];
