@@ -33,7 +33,7 @@ const getReportComponentTypeId = async ({ code }) => {
 };
 
 const getReportComponentId = async ({ reportTemplateId, code }) => {
-  let reportComponentTypeId = await await getReportComponentTypeId({
+  let reportComponentTypeId = await getReportComponentTypeId({
     code,
   });
 
@@ -57,10 +57,21 @@ const getReportNormId = async ({ publishNormCode, reportComponentId }) => {
   const reportNorm =
     (await db.ReportNorm.findOne({
       where: {
-        publishNormCode: {
-          // Bắt TH 01,02
-          [Op.in]: [publishNormCode, removeFirst0(publishNormCode)],
-        },
+        [Op.or]: [
+          {
+            publishNormCode: {
+              // Bắt TH 01,02
+              [Op.in]: [publishNormCode, removeFirst0(publishNormCode)],
+            },
+          },
+          {
+            publishNormCode2: {
+              // Bắt TH 01,02
+              [Op.in]: [publishNormCode, removeFirst0(publishNormCode)],
+            },
+          },
+        ],
+
         reportComponentId,
       },
     })) ?? {};
@@ -122,8 +133,6 @@ const getReportComponentType = async ({ reportComponentTypeId }) => {
 };
 
 const getReportData = async (whereParams = {}) => {
-  // console.log("[whereParams]:", whereParams);
-
   const report = await db.ReportData.findOne({
     where: whereParams,
     include: [{ model: db.ReportDataDetail, as: "reportDataDetails" }],
@@ -176,5 +185,5 @@ module.exports = {
   getReportComponentId,
   getReportNormId,
   getReportData,
-  bulkCreateReportDataDetail
+  bulkCreateReportDataDetail,
 };

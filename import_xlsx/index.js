@@ -16,6 +16,7 @@ const getJsonData = (sheetIndex) => {
         const newKey = key.charAt(0).toLowerCase() + key.slice(1);
         newObj[newKey] = data[key];
       });
+      newObj.lastUpdate = new Date();
       return newObj;
     });
     return objArray;
@@ -113,9 +114,7 @@ const insertBusinessTypeIdToCompany = async () => {
   try {
     // const newReportComponent = await db.ReportComponent.create(jsonData[0]);
     await db.Company.bulkCreate(jsonData, {
-      updateOnDuplicate: [
-        "businessTypeId",
-      ],
+      updateOnDuplicate: ["businessTypeId"],
       transaction: t,
     });
 

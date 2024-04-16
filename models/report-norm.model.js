@@ -27,6 +27,9 @@ module.exports = (sequelize, Sequelize) => {
       publishNormCode: {
         type: DataTypes.STRING(32),
       },
+      publishNormCode2: {
+        type: DataTypes.STRING(32),
+      },
       ordering: {
         type: DataTypes.INTEGER,
       },
