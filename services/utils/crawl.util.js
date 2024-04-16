@@ -4,7 +4,7 @@ const {
   auditStatusConst,
   unitedStatusIdConst,
   reportComponentTypeCode,
-} = require("../shared/constant");
+} = require("../../shared/constant");
 
 const getReportTermType = ({ reportName }) => {
   let reportTermType = null;

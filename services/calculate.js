@@ -1,14 +1,20 @@
-const { getReportData } = require("../database/reportUtils");
+const {
+  getReportData,
+  bulkCreateReportDataDetail,
+} = require("../database/reportUtils");
 const db = require("../models");
 const {
   reportTermIdConst,
   reportTermTypeConst,
+  reportComponentTypeCode,
 } = require("../shared/constant");
 const _ = require("lodash");
+const { filterLCTT, filterKQKD } = require("./utils/calculate.util");
+const { calculateLcttQuy2 } = require("./func/calculate.func");
 
 const calculate = async () => {
   const reportData = await getReportData({
-    reportTermId: reportTermIdConst.quy3,
+    reportTermId: reportTermIdConst["9thangDauNam"],
   });
   console.log(reportData);
 
@@ -16,51 +22,86 @@ const calculate = async () => {
     return;
   }
 
-  if (reportData?.reportTermId == reportTermIdConst.quy3) {
-    const { auditStatusId, isAdjusted, stockCode, unitedStatusId, yearPeriod } =
-      reportData;
+  const {
+    auditStatusId,
+    isAdjusted,
+    stockCode,
+    unitedStatusId,
+    yearPeriod,
+    reportTermId,
+  } = reportData;
 
-    const whereParams = {
-      auditStatusId,
-      isAdjusted,
-      stockCode,
-      unitedStatusId,
-      yearPeriod,
-    };
+  const whereParams = {
+    auditStatusId,
+    isAdjusted,
+    stockCode,
+    unitedStatusId,
+    yearPeriod,
+  };
 
-    const reportDataBanNien = await getReportData({
-      ...whereParams,
-      reportTermId: reportTermIdConst.banNien,
-    });
+  switch (reportTermId) {
+    // TH bao cao quy 1 thay doi
+    case reportTermIdConst.quy1: {
+      const reportDataQuy1 = reportData;
+      const reportDataQuy2 = await db.ReportData.findOne({
+        where: { ...whereParams, reportTermId: reportTermIdConst.quy2 },
+      });
+      const reportDataBanNien = await getReportData({
+        ...whereParams,
+        reportTermId: reportTermIdConst.banNien,
+      });
+      await calculateLcttQuy2({
+        reportDataQuy1,
+        reportDataQuy2,
+        reportDataBanNien,
+      });
+      break;
+    }
 
-    const reportData9ThangDauNam = await getReportData({
-      ...whereParams,
-      reportTermId: reportTermIdConst["9thangDauNam"],
-    });
+    // TH báo cáo bán niên thay đổi
+    case reportTermIdConst.banNien: {
+      const reportDataQuy1 = await getReportData({
+        ...whereParams,
+        reportTermId: reportTermIdConst.quy1,
+      });
+      const reportDataQuy2 = await db.ReportData.findOne({
+        where: { ...whereParams, reportTermId: reportTermIdConst.quy2 },
+      });
+      const reportDataBanNien = reportData;
+      await calculateLcttQuy2({
+        reportDataQuy1,
+        reportDataQuy2,
+        reportDataBanNien,
+      });
+
+      break;
+    }
+
+    default:
   }
 
-  if (reportData.reportTermId == reportTermIdConst.quy2) {
-    const { auditStatusId, isAdjusted, stockCode, unitedStatusId, yearPeriod } =
-      reportData;
+  // if (reportData.reportTermId == reportTermIdConst.quy2) {
+  //   const { auditStatusId, isAdjusted, stockCode, unitedStatusId, yearPeriod } =
+  //     reportData;
 
-    const whereParams = {
-      auditStatusId,
-      isAdjusted,
-      stockCode,
-      unitedStatusId,
-      yearPeriod,
-    };
+  //   const whereParams = {
+  //     auditStatusId,
+  //     isAdjusted,
+  //     stockCode,
+  //     unitedStatusId,
+  //     yearPeriod,
+  //   };
 
-    const reportDataBanNien = await getReportData({
-      ...whereParams,
-      reportTermId: reportTermIdConst.banNien,
-    });
+  //   const reportDataBanNien = await getReportData({
+  //     ...whereParams,
+  //     reportTermId: reportTermIdConst.banNien,
+  //   });
 
-    const reportDataQuy1 = await getReportData({
-      ...whereParams,
-      reportTermId: reportTermIdConst.quy1,
-    });
-  }
+  //   const reportDataQuy1 = await getReportData({
+  //     ...whereParams,
+  //     reportTermId: reportTermIdConst.quy1,
+  //   });
+  // }
 };
 
 module.exports = { calculate };

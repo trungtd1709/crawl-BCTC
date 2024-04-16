@@ -41,7 +41,7 @@ const {
   getAuditStatusId,
   getUnitedStatusId,
   getTableCode,
-} = require("./crawl.util.js");
+} = require("./utils/crawl.util.js");
 const { insertReportToDB } = require("../database/insert.js");
 const chrome = require("selenium-webdriver/chrome");
 
