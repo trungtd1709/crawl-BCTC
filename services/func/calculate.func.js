@@ -370,4 +370,11 @@ const calculateKqkd12Thang = async ({
   await bulkCreateReportDataDetail(reportDataDetails12Thang);
 };
 
-module.exports = { calculateLcttQuy2, calculateKqkdBanNien, calculateLcttQuy3 };
+module.exports = {
+  calculateLcttQuy2,
+  calculateKqkdBanNien,
+  calculateKqkd9Thang,
+  calculateLcttQuy3,
+  calculateLcttQuy4,
+  calculateKqkd12Thang,
+};

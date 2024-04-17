@@ -137,26 +137,26 @@ const getReportData = async (whereParams = {}) => {
     where: whereParams,
     include: [{ model: db.ReportDataDetail, as: "reportDataDetails" }],
   });
-  let jsonReport = report.toJSON();
-  let { reportDataDetails = [] } = jsonReport;
+  if (!_.isEmpty(report)) {
+    let jsonReport = report.toJSON();
+    let { reportDataDetails = [] } = jsonReport;
 
-  for await (let reportDataDetail of reportDataDetails) {
-    try {
-      const { reportNormId } = reportDataDetail;
-      const reportNorm = await getReportNorm({ reportNormId });
-      const { reportComponentId } = reportNorm;
-      const reportComponent = await getReportComponent({ reportComponentId });
-      const { reportComponentTypeId } = reportComponent;
-      const reportComponentType = await getReportComponentType({
-        reportComponentTypeId,
-      });
-      const { code } = reportComponentType;
-      reportDataDetail.code = code;
-    } catch (err) {
-      console.log("[ERR when get code report data detail:", err);
+    for await (let reportDataDetail of reportDataDetails) {
+      try {
+        const { reportNormId } = reportDataDetail;
+        const reportNorm = await getReportNorm({ reportNormId });
+        const { reportComponentId } = reportNorm;
+        const reportComponent = await getReportComponent({ reportComponentId });
+        const { reportComponentTypeId } = reportComponent;
+        const reportComponentType = await getReportComponentType({
+          reportComponentTypeId,
+        });
+        const { code } = reportComponentType;
+        reportDataDetail.code = code;
+      } catch (err) {
+        console.log("[ERR when get code report data detail:", err);
+      }
     }
-  }
-  if (!_.isEmpty(jsonReport)) {
     jsonReport.reportDataDetails = reportDataDetails;
     return jsonReport;
   } else {

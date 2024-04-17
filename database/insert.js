@@ -29,7 +29,30 @@ const insertReportToDB = async ({ reportData }) => {
     });
 
     if (!_.isEmpty(dbReport)) {
-      console.log("[Báo cáo đã tồn tại trong database]:");
+      const { reportDataId } = dbReport;
+      console.log("[Báo cáo đã tồn tại trong database]");
+      for await (const reportDataDetail of reportDataDetails) {
+        const { reportNormId } = reportDataDetail;
+        const existedReportDetail = await db.ReportDataDetail.findOne({
+          where: {
+            reportDataId,
+            reportNormId,
+          },
+        });
+
+        if (!existedReportDetail) {
+          const newReportDetail = await db.ReportDataDetail.create(
+            {
+              ...reportDataDetail,
+              reportDataId,
+            },
+            {
+              transaction: t,
+            }
+          );
+          console.log("[Insert reportDataDetail thành công]");
+        }
+      }
       //   await db.ReportData.update({}, { transaction: t });
     } else {
       const newReport = await db.ReportData.create(reportData, {
@@ -41,7 +64,7 @@ const insertReportToDB = async ({ reportData }) => {
     }
     await t.commit();
   } catch (err) {
-    console.log("[Loi khi ghi du lieu vao db]:", err);
+    console.log("[Lỗi khi ghi dữ liệu vào database]:", err);
     await t.rollback();
   } finally {
     return;

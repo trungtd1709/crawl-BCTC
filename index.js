@@ -12,7 +12,7 @@ const start = async () => {
     await connectDB();
     await syncDB();
     await inserReportXLSX();
-    // await crawlData();
+    await crawlData();
     // await calculate();
   } catch (err) {
     console.log(err);
