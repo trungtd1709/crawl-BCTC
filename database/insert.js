@@ -38,6 +38,7 @@ const insertReportToDB = async ({ reportData }) => {
             reportDataId,
             reportNormId,
           },
+          transaction: t,
         });
 
         if (!existedReportDetail) {
