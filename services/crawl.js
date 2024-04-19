@@ -223,13 +223,13 @@ const startCrawlDetail = async (driver, reportSent) => {
       reportData.reportDataDetails = [
         ...BCDKTData,
         ...KQKDData,
-        ...LCTTData0,
-        ...LCGTData0,
+        // ...LCTTData0,
+        // ...LCGTData0,
       ];
 
       secondReportData.reportDataDetails = [
-        ...BCDKTData0,
-        ...KQKDData0,
+        // ...BCDKTData0,
+        // ...KQKDData0,
         ...LCTTData,
         ...LCGTData,
       ];
