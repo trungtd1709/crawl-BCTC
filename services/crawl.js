@@ -62,10 +62,10 @@ const waitPageLoad = async (driver) => {
 
 const crawlData = async () => {
   let options = new chrome.Options();
-  // options.addArguments("--headless");
-  // options.addArguments("--disable-gpu");
-  // options.addArguments("--no-sandbox");
-  // options.addArguments("--disable-dev-shm-usage");
+  options.addArguments("--headless");
+  options.addArguments("--disable-gpu");
+  options.addArguments("--no-sandbox");
+  options.addArguments("--disable-dev-shm-usage");
 
   const driver = await new Builder()
     .forBrowser("chrome")
