@@ -122,7 +122,8 @@ const crawlData = async () => {
       loopIndex++;
       if (rowIndex === companyPerPage - 1) {
         rowIndex = 0;
-        currentPagination++;
+        // currentPagination++;
+        currentPagination += 10;
       } else {
         rowIndex++;
       }
