@@ -106,9 +106,13 @@ const removeFirst0 = (str) => {
   return newStr;
 };
 
-const formatDate = (dateStr) => {
-  const dateObj = moment(dateStr, "DD/MM/YYYY");
-  const formatedDate = dateObj.format("YYYY-MM-DD");
+const formatDate = ({
+  dateStr,
+  originalDateFormat = "DD/MM/YYYY",
+  formattedDateFormat = "YYYY-MM-DD",
+}) => {
+  const dateObj = moment(dateStr, originalDateFormat);
+  const formatedDate = dateObj.format(formattedDateFormat);
   return formatedDate;
 };
 

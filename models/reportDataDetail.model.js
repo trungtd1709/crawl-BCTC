@@ -19,7 +19,7 @@ module.exports = (sequelize, Sequelize) => {
       reportDataId: DataTypes.INTEGER.UNSIGNED,
       reportNormId: DataTypes.INTEGER.UNSIGNED,
       value: DataTypes.DOUBLE,
-      value: {
+      original: {
         type: DataTypes.BOOLEAN,
         defaultValue: true, 
       },

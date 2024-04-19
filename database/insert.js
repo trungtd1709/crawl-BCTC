@@ -13,7 +13,7 @@ const insertReportToDB = async ({ reportData }) => {
     reportDataDetails,
   } = reportData;
 
-  reportData.reportDate = formatDate(reportData.reportDate);
+  reportData.reportDate = formatDate({ dateStr: reportData.reportDate });
   const t = await db.sequelize.transaction();
   try {
     const dbReport = await db.ReportData.findOne({

@@ -7,6 +7,7 @@ const {
   now,
   writeToFile,
   stringToInt,
+  formatDate,
 } = require("../shared/utils/index.js");
 const {
   companyNameTableId,
@@ -61,10 +62,10 @@ const waitPageLoad = async (driver) => {
 
 const crawlData = async () => {
   let options = new chrome.Options();
-  options.addArguments("--headless");
-  options.addArguments("--disable-gpu");
-  options.addArguments("--no-sandbox");
-  options.addArguments("--disable-dev-shm-usage");
+  // options.addArguments("--headless");
+  // options.addArguments("--disable-gpu");
+  // options.addArguments("--no-sandbox");
+  // options.addArguments("--disable-dev-shm-usage");
 
   const driver = await new Builder()
     .forBrowser("chrome")
@@ -98,11 +99,21 @@ const crawlData = async () => {
       const reportLinkElement = await trElements[rowIndex].findElements(
         By.css("td")
       );
+      const reportSentStr = await reportLinkElement[4].getText();
+      let reportSent = null;
+      if (reportSentStr) {
+        reportSent =
+          formatDate({
+            dateStr: reportSentStr,
+            originalDateFormat: "DD/MM/YYYY hh:mm:ss",
+            formattedDateFormat: "YYYY-MM-DD hh:mm:ss",
+          });
+      }
       // Find and click the anchor element
       await navigateToReportDetail(reportLinkElement[1]);
       await waitPageLoad(driver);
       await delay(3);
-      await startCrawlDetail(driver);
+      await startCrawlDetail(driver, reportSent);
 
       // Navigate back and wait for the page to load
       await driver.get(urlToCrawl);
@@ -133,7 +144,7 @@ const navigateToReportDetail = async (anchorContainerEl) => {
 };
 
 // Khi đã vào trang chi tiết gọi hàm này bắt đầu lấy dữ liệu
-const startCrawlDetail = async (driver) => {
+const startCrawlDetail = async (driver, reportSent) => {
   try {
     const {
       businessPermit,
@@ -163,12 +174,13 @@ const startCrawlDetail = async (driver) => {
       auditStatusId,
       reportDate,
       isAdjusted,
+      reportSent,
       // reportTermId,
       unitedStatusId,
       // reportDataDetails,
     };
 
-    let secondReportData = reportData;
+    let secondReportData = { ...reportData };
 
     reportData.reportTermId = reportTermId;
 
@@ -198,13 +210,13 @@ const startCrawlDetail = async (driver) => {
       const BCDKTData0 = BCDKTData.map((obj) => {
         return { ...obj, value: 0 };
       });
-      const KQKDData0 = KQKDData.map(obj => {
+      const KQKDData0 = KQKDData.map((obj) => {
         return { ...obj, value: 0 };
       });
-      const LCTTData0 = LCTTData.map(obj => {
+      const LCTTData0 = LCTTData.map((obj) => {
         return { ...obj, value: 0 };
       });
-      const LCGTData0 = LCGTData.map(obj => {
+      const LCGTData0 = LCGTData.map((obj) => {
         return { ...obj, value: 0 };
       });
 
