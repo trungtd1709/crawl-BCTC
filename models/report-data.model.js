@@ -23,7 +23,7 @@ module.exports = sequelize => {
       unitedStatusId: DataTypes.TINYINT,
       reportDate: DataTypes.TIME,
       lastUpdate: DataTypes.TIME,
-      reportSent: DataTypes.TIME,
+      reportSent: DataTypes.DATE,
       klcpny: DataTypes.BIGINT,
       klcplh: DataTypes.BIGINT,
       klcplhdc: DataTypes.BIGINT,
