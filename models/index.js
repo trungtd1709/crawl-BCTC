@@ -246,6 +246,18 @@ db.ReportComponent = require("./report-component.model.js")(sequelize);
  */
 db.ReportTemplate = require("./report-template.model.js")(sequelize);
 
+/**
+ * @type {Sequelize.ModelStatic<Sequelize.Model>}
+ */
+db.ReportDataDraft = require("./report-data-draft-model.js")(sequelize);
+
+/**
+ * @type {Sequelize.ModelStatic<Sequelize.Model>}
+ */
+db.ReportDataDetailDraft = require("./report-data-detail-draft.model.js")(
+  sequelize
+);
+
 // chien: dinh nghia cac association
 db.categories.hasMany(db.Video, { foreignKey: "categoryId" });
 db.Video.belongsTo(db.categories, { foreignKey: "categoryId" });
@@ -476,7 +488,8 @@ db.FavouriteFilterLine.belongsTo(db.account, { foreignKey: "accountId" });
 db.account.hasMany(db.FavouriteFilterLine, { foreignKey: "accountId" });
 
 db.ReportTemplate.hasMany(db.ReportComponent, {
-  foreignKey: "reportTemplateId",  onDelete: "CASCADE",
+  foreignKey: "reportTemplateId",
+  onDelete: "CASCADE",
 });
 db.ReportComponent.belongsTo(db.ReportTemplate, {
   foreignKey: "reportComponentId",
@@ -488,6 +501,13 @@ db.ReportComponentType.hasMany(db.ReportComponent, {
 });
 db.ReportComponent.belongsTo(db.ReportComponentType, {
   foreignKey: "reportComponentTypeId",
+});
+
+db.ReportDataDraft.hasMany(db.ReportDataDetailDraft, {
+  foreignKey: "reportDataDraftId",
+});
+db.ReportDataDetailDraft.belongsTo(db.ReportData, {
+  foreignKey: "reportDataDraftId",
 });
 
 db.OflineDate = require("./offlineDate.model.js")(sequelize, Sequelize);

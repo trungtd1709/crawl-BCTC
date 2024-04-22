@@ -43,7 +43,10 @@ const {
   getUnitedStatusId,
   getTableCode,
 } = require("./utils/crawl.util.js");
-const { insertReportToDB } = require("../database/insert.js");
+const {
+  insertReport,
+  insertReportDataDraftToDb,
+} = require("../database/insert.js");
 const chrome = require("selenium-webdriver/chrome");
 
 const waitPageLoad = async (driver) => {
@@ -62,10 +65,10 @@ const waitPageLoad = async (driver) => {
 
 const crawlData = async () => {
   let options = new chrome.Options();
-  options.addArguments("--headless");
-  options.addArguments("--disable-gpu");
-  options.addArguments("--no-sandbox");
-  options.addArguments("--disable-dev-shm-usage");
+  // options.addArguments("--headless");
+  // options.addArguments("--disable-gpu");
+  // options.addArguments("--no-sandbox");
+  // options.addArguments("--disable-dev-shm-usage");
 
   const driver = await new Builder()
     .forBrowser("chrome")
@@ -102,12 +105,11 @@ const crawlData = async () => {
       const reportSentStr = await reportLinkElement[4].getText();
       let reportSent = null;
       if (reportSentStr) {
-        reportSent =
-          formatDate({
-            dateStr: reportSentStr,
-            originalDateFormat: "DD/MM/YYYY hh:mm:ss",
-            formattedDateFormat: "YYYY-MM-DD hh:mm:ss",
-          });
+        reportSent = formatDate({
+          dateStr: reportSentStr,
+          originalDateFormat: "DD/MM/YYYY hh:mm:ss",
+          formattedDateFormat: "YYYY-MM-DD hh:mm:ss",
+        });
       }
       // Find and click the anchor element
       await navigateToReportDetail(reportLinkElement[1]);
@@ -159,7 +161,7 @@ const startCrawlDetail = async (driver, reportSent) => {
       reportTermId,
       unitedStatusId,
       yearPeriod,
-    } = await getReportTitleInfo({ driver });
+    } = await getReportTitleInfo({ driver, reportSent });
 
     let allTableData =
       (await getAllTableData({ driver, reportTemplateId, reportTermId })) ?? [];
@@ -247,10 +249,10 @@ const startCrawlDetail = async (driver, reportSent) => {
           break;
         default:
       }
-      await insertReportToDB({ reportData: secondReportData });
+      await insertReport({ reportData: secondReportData });
     }
 
-    await insertReportToDB({ reportData });
+    await insertReport({ reportData });
 
     // await writeToFile({
     //   content: JSON.stringify(reportData),
@@ -334,7 +336,7 @@ const getSingleTableData = async ({
 /**
  * @param {{ driver: import('selenium-webdriver').WebDriver }} params
  */
-const getReportTitleInfo = async ({ driver }) => {
+const getReportTitleInfo = async ({ driver, reportSent }) => {
   await waitForElementVisibleById(driver, companyNameTableId);
   const companyNameTableEl = await driver.findElement(
     By.id(companyNameTableId)
@@ -356,10 +358,6 @@ const getReportTitleInfo = async ({ driver }) => {
   const businessPermitContainerEl = headerEls[0];
   const businessPermit = await businessPermitContainerEl.getText();
 
-  const company = await getCompanyByBusinessPermit({ businessPermit });
-  const { stockCode, businessTypeId = 0 } = company;
-  const reportTemplateId = await getReportTemplateId({ businessTypeId });
-
   // reportTermType dua tren reportName (quý, bán niên, năm)
   const reportTermType = getReportTermType({ reportName });
   const unitedStatusId = getUnitedStatusId({ reportName });
@@ -369,6 +367,31 @@ const getReportTitleInfo = async ({ driver }) => {
       driver,
       reportTermType,
     });
+
+  const company = await getCompanyByBusinessPermit({ businessPermit });
+  if (
+    _.isEmpty(company) ||
+    !yearPeriod ||
+    !reportTermId ||
+    !auditStatusId ||
+    !unitedStatusId
+  ) {
+    const reportDataDraft = {
+      businessPermit,
+      yearPeriod,
+      reportTermId,
+      auditStatusId,
+      isAdjusted,
+      unitedStatusId,
+      reportDate,
+      reportSent,
+    };
+    await insertReportDataDraftToDb({ reportDataDraft });
+    throw new Error(`${now()}: ReportData thiếu dữ liệu`);
+  }
+
+  const { stockCode, businessTypeId = 0 } = company;
+  const reportTemplateId = await getReportTemplateId({ businessTypeId });
 
   console.log(
     now() +
@@ -462,7 +485,7 @@ const getReportGeneralInfo = async ({ driver, reportTermType }) => {
         break;
 
       case "Ngày ký ban hành":
-        reportDate = dataValue;
+        reportDate = formatDate({ dateStr: dataValue });
         break;
       default:
       // console.log("default");
@@ -548,13 +571,14 @@ const getDetailTableData = async ({
     const objectData = {
       keyname,
       publishNormCode,
+      reportComponentId,
       value,
       // numberStartOfTerm,
       reportNormId,
       lastUpdate: new Date(),
     };
     // console.log("[objectData]:", objectData);
-    if (publishNormCode && reportNormId && !_.isNaN(value) && value) {
+    if (publishNormCode?.length > 1 && !_.isNaN(value)) {
       tableData.push(objectData);
     } else {
       // do nothing

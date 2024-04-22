@@ -1,8 +1,42 @@
 const db = require("../models");
 const _ = require("lodash");
-const { formatDate } = require("../shared/utils");
+const { formatDate, now } = require("../shared/utils");
 
-const insertReportToDB = async ({ reportData }) => {
+const insertReport = async ({ reportData }) => {
+  let { reportDataDetails = [] } = reportData;
+
+  // reportData.reportDate = formatDate({ dateStr: reportData.reportDate });
+  try {
+    let isValidReportData = true;
+    let allValuesAreZero = true;
+    for (const reportDataDetail of reportDataDetails) {
+      const { reportNormId, value } = reportDataDetail;
+      if (!reportNormId) {
+        isValidReportData = false;
+        break;
+      }
+      if (value) {
+        allValuesAreZero = false;
+      }
+    }
+
+    if (allValuesAreZero) {
+      isValidReportData = false;
+    }
+
+    if (isValidReportData) {
+      await insertReportToDb({ reportData });
+    } else {
+      await insertReportDataDraftToDb({ reportDataDraft: reportData });
+    }
+  } catch (err) {
+    console.log("[Lỗi khi ghi dữ liệu vào database]:", err);
+  } finally {
+    return;
+  }
+};
+
+const insertReportToDb = async ({ reportData }) => {
   let {
     stockCode,
     reportTermId,
@@ -10,10 +44,10 @@ const insertReportToDB = async ({ reportData }) => {
     auditStatusId,
     isAdjusted,
     unitedStatusId,
-    reportDataDetails,
+    reportDataDetails = [],
   } = reportData;
 
-  reportData.reportDate = formatDate({ dateStr: reportData.reportDate });
+  // reportData.reportDate = formatDate({ dateStr: reportData.reportDate });
   const t = await db.sequelize.transaction();
   try {
     const dbReport = await db.ReportData.findOne({
@@ -70,9 +104,56 @@ const insertReportToDB = async ({ reportData }) => {
   } finally {
     return;
   }
-  //   const report = await db.ReportData.create;
+};
+
+const insertReportDataDraftToDb = async ({ reportDataDraft }) => {
+  const t = await db.sequelize.transaction();
+  try {
+    let {
+      businessPermit,
+      reportTermId,
+      yearPeriod,
+      auditStatusId,
+      isAdjusted,
+      unitedStatusId,
+      reportDataDetails
+    } = reportDataDraft;
+
+    const existedDraft = await db.ReportDataDraft.findOne({
+      where: {
+        businessPermit,
+        reportTermId,
+        yearPeriod,
+        auditStatusId,
+        isAdjusted,
+        unitedStatusId,
+      },
+      transaction: t,
+    });
+
+    if (!_.isEmpty(existedDraft)) {
+      await t.commit();
+      throw new Error(`${now()}: Báo cáo Draft đã tồn tại trong đb`);
+      return;
+    }
+
+    reportDataDraft.reportDataDetailDrafts = reportDataDetails;
+
+    await db.ReportDataDraft.create(reportDataDraft, {
+      include: [
+        { model: db.ReportDataDetailDraft, as: "reportDataDetailDrafts" },
+      ],
+      transaction: t,
+    });
+    await t.commit();
+    console.log(`${now()}: INSERT REPORT DATA DRAFT thành công`);
+  } catch (err) {
+    console.log(err);
+    await t.rollback();
+  }
 };
 
 module.exports = {
-  insertReportToDB,
+  insertReport,
+  insertReportDataDraftToDb,
 };

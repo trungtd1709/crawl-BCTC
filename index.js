@@ -10,7 +10,7 @@ const { calculate } = require("./services/calculate");
 const start = async () => {
   try {
     await connectDB();
-    // await syncDB();
+    await syncDB();
     // await inserReportXLSX();
     await crawlData();
     // await calculate();

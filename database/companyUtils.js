@@ -12,9 +12,9 @@ const getCompanyByBusinessPermit = async ({ businessPermit }) => {
     //   filename: "missing_business_permit.txt",
     //   content: businessPermit,
     // });
-    throw new Error(
-      `Không tìm thấy công ty ứng với mã doanh nghiệp: ${businessPermit}`
-    );
+    // throw new Error(
+    //   `Không tìm thấy công ty ứng với mã doanh nghiệp: ${businessPermit}`
+    // );
     return {};
   }
   return company;

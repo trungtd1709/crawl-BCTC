@@ -18,8 +18,10 @@ const syncDB = async () => {
     await db.ReportComponentType.sync({ alter: true });
     await db.ReportTemplate.sync({ alter: true });
     await db.ReportNorm.sync({ alter: true });
-    await db.ReportData.sync({ alter: true });
+    // await db.ReportData.sync({ alter: true });
     // await db.ReportDataDetail.sync({ alter: true });
+    await db.ReportDataDraft.sync({alter: true});
+    await db.ReportDataDetailDraft.sync({alter: true});
 
     console.log("Sync successfully.");
   } catch (error) {

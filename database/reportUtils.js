@@ -179,6 +179,7 @@ const bulkCreateReportDataDetail = async (reportDataDetails) => {
   }
 };
 
+
 module.exports = {
   getReportTemplateId,
   getReportComponentTypeId,
