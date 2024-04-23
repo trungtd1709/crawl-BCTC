@@ -65,11 +65,11 @@ const waitPageLoad = async (driver) => {
 };
 
 const crawlData = async () => {
-  let options = new chrome.Options();
-  options.addArguments("--headless");
-  options.addArguments("--disable-gpu");
-  options.addArguments("--no-sandbox");
-  options.addArguments("--disable-dev-shm-usage");
+  let options = new chrome.Options().windowSize({width: 1920, height: 1080});
+  // options.addArguments("--headless");
+  // options.addArguments("--disable-gpu");
+  // options.addArguments("--no-sandbox");
+  // options.addArguments("--disable-dev-shm-usage");
 
   const driver = await new Builder()
     .forBrowser("chrome")
@@ -95,15 +95,16 @@ const crawlData = async () => {
         await changePagination(driver, currentPagination);
         await waitPageLoad(driver);
       }
-      await delay(3);
 
       await waitForElementVisibleByXPath(driver, "//*[@_afrrk]");
+      await delay(5);
       const trElements = await driver.findElements(By.xpath("//*[@_afrrk]"));
       // tìm thẻ <td> thứ 2 trong mảng, thẻ này chứa link báo cáo
-      const reportLinkElement = await trElements[rowIndex].findElements(
+      const reportLinkElements = await trElements[rowIndex].findElements(
         By.css("td")
       );
-      const reportSentStr = await reportLinkElement[4].getText();
+      await driver.wait(until.elementIsVisible(reportLinkElements[4]), 10000);
+      const reportSentStr = await reportLinkElements[4].getText();
       let reportSent = null;
       if (reportSentStr) {
         reportSent = formatDate({
@@ -113,7 +114,7 @@ const crawlData = async () => {
         });
       }
       // Find and click the anchor element
-      await navigateToReportDetail(reportLinkElement[1]);
+      await navigateToReportDetail(reportLinkElements[1]);
       await waitPageLoad(driver);
       await delay(3);
       await startCrawlDetail(driver, reportSent);
