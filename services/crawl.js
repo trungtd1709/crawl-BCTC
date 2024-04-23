@@ -230,7 +230,7 @@ const startCrawlDetail = async (driver, reportSent) => {
           secondReportData.reportTermId = reportTermIdConst["9thangDauNam"];
           break;
         case reportTermIdConst.quy4:
-          secondReportData.reportTermId = reportTermIdConst.nam;
+          secondReportData.reportTermId = reportTermIdConst["12thang"];
           break;
         default:
       }
