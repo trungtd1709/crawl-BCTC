@@ -14,6 +14,7 @@ module.exports = sequelize => {
         primaryKey: true,
         autoIncrement: true,
       },
+      stockCode: DataTypes.STRING(16),
       businessPermit: DataTypes.STRING(16),
       reportTermId: DataTypes.INTEGER.UNSIGNED,
       auditStatusId: DataTypes.TINYINT,

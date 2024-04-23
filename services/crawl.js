@@ -27,6 +27,7 @@ const {
   startPagination,
   paginationTableId,
   tableOrderConst,
+  businessTypeIdConst,
 } = require("../shared/constant.js");
 const db = require("../models/index.js");
 const {
@@ -161,10 +162,16 @@ const startCrawlDetail = async (driver, reportSent) => {
       reportTermId,
       unitedStatusId,
       yearPeriod,
+      businessTypeId,
     } = await getReportTitleInfo({ driver, reportSent });
 
     let allTableData =
-      (await getAllTableData({ driver, reportTemplateId, reportTermId })) ?? [];
+      (await getAllTableData({
+        driver,
+        reportTemplateId,
+        reportTermId,
+        businessTypeId,
+      })) ?? [];
 
     // một trang báo cáo trên CBTT phải chia làm 2 report data với termId khác nhau
     let reportData = {
@@ -210,32 +217,9 @@ const startCrawlDetail = async (driver, reportSent) => {
       reportTermId == reportTermIdConst.quy3 ||
       reportTermId == reportTermIdConst.quy4
     ) {
-      const BCDKTData0 = BCDKTData.map((obj) => {
-        return { ...obj, value: 0 };
-      });
-      const KQKDData0 = KQKDData.map((obj) => {
-        return { ...obj, value: 0 };
-      });
-      const LCTTData0 = LCTTData.map((obj) => {
-        return { ...obj, value: 0 };
-      });
-      const LCGTData0 = LCGTData.map((obj) => {
-        return { ...obj, value: 0 };
-      });
+      reportData.reportDataDetails = [...BCDKTData, ...KQKDData];
 
-      reportData.reportDataDetails = [
-        ...BCDKTData,
-        ...KQKDData,
-        // ...LCTTData0,
-        // ...LCGTData0,
-      ];
-
-      secondReportData.reportDataDetails = [
-        // ...BCDKTData0,
-        // ...KQKDData0,
-        ...LCTTData,
-        ...LCGTData,
-      ];
+      secondReportData.reportDataDetails = [...LCTTData, ...LCGTData];
 
       switch (reportTermId) {
         case reportTermIdConst.quy2:
@@ -283,7 +267,12 @@ const startCrawlDetail = async (driver, reportSent) => {
   }
 };
 
-const getAllTableData = async ({ driver, reportTemplateId, reportTermId }) => {
+const getAllTableData = async ({
+  driver,
+  reportTemplateId,
+  reportTermId,
+  businessTypeId,
+}) => {
   let tableOrder = 1;
   let reportComponentId;
   let singleTableData = [];
@@ -303,6 +292,7 @@ const getAllTableData = async ({ driver, reportTemplateId, reportTermId }) => {
       tableOrder,
       reportComponentId,
       reportTermId,
+      businessTypeId,
     });
     // allTableData = [...allTableData, ...singleTableData];
     allTableData.push(singleTableData);
@@ -319,6 +309,7 @@ const getSingleTableData = async ({
   tableOrder,
   reportComponentId,
   reportTermId,
+  businessTypeId,
 }) => {
   const tableId = getTableId(tableOrder);
   await waitForElementVisibleById(driver, tableId);
@@ -329,6 +320,7 @@ const getSingleTableData = async ({
     reportComponentId,
     reportTermId,
     tableOrder,
+    businessTypeId,
   });
   return tableData;
 };
@@ -421,6 +413,7 @@ const getReportTitleInfo = async ({ driver, reportSent }) => {
     unitedStatusId,
     isAdjusted,
     reportDate,
+    businessTypeId,
   };
 };
 
@@ -525,6 +518,7 @@ const getDetailTableData = async ({
   rowsDataEl,
   reportComponentId,
   tableOrder,
+  businessTypeId,
 }) => {
   let tableData = [];
   outerLoop: for await (const [rowIndex, rowDataEl] of rowsDataEl.entries()) {
@@ -577,12 +571,49 @@ const getDetailTableData = async ({
       reportNormId,
       lastUpdate: new Date(),
     };
-    // console.log("[objectData]:", objectData);
     if (publishNormCode?.length > 1 && !_.isNaN(value)) {
       tableData.push(objectData);
     } else {
       // do nothing
-      // console.log("[invalid objectData]:", objectData);
+    }
+  }
+  if (tableOrder == tableOrderConst.KQKD) {
+    let value197 = null;
+    const norm195 = _.find(tableData, { reportNormId: 195 });
+    const norm196 = _.find(tableData, { reportNormId: 196 });
+
+    if (norm195 && norm196) {
+      const value195 = norm195.value;
+      const value196 = norm196.value;
+      switch (businessTypeId) {
+        case businessTypeIdConst.NH: {
+          value197 = value195 - value196;
+          break;
+        }
+        case businessTypeIdConst.BH1: {
+          const norm197 = _.find(tableData, { reportNormId: 197 });
+          if (!norm197?.value) {
+            value197 = value195 - value196;
+          }
+          break;
+        }
+        case businessTypeIdConst.BH2: {
+          const norm197 = _.find(tableData, { reportNormId: 197 });
+          if (!norm197?.value) {
+            value197 = value195 - value196;
+          }
+          break;
+        }
+      }
+      if (value197 != null) {
+        const objectData = {
+          keyname,
+          value,
+          reportNormId: 197,
+          lastUpdate: new Date(),
+        };
+        tableData.push(objectData);
+      }
     }
   }
   // console.log("[tableData]:", tableData);

@@ -72,6 +72,14 @@ const tableOrderConst = {
   LCGT: 4,
 };
 
+const businessTypeIdConst = {
+  CTCP: 1,
+  CK: 2, // chung khoan
+  NH: 3, // ngan hang
+  BH1: 5, // bao hiem loai 1
+  BH2: 6, // bao hiem loai 2
+};
+
 module.exports = {
   idButtonChangeTab2,
   idButtonChangeTab3,
@@ -98,4 +106,5 @@ module.exports = {
   startPagination,
   paginationTableId,
   tableOrderConst,
+  businessTypeIdConst,
 };
