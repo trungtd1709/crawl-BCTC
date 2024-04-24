@@ -45,8 +45,8 @@ const {
   getTableCode,
 } = require("./utils/crawl.util.js");
 const {
-  insertReport,
   insertReportDataDraftToDb,
+  insertReportToDb,
 } = require("../database/insert.js");
 const chrome = require("selenium-webdriver/chrome");
 
@@ -65,7 +65,7 @@ const waitPageLoad = async (driver) => {
 };
 
 const crawlData = async () => {
-  let options = new chrome.Options().windowSize({width: 1920, height: 1080});
+  let options = new chrome.Options().windowSize({ width: 1920, height: 1080 });
   options.addArguments("--headless");
   options.addArguments("--disable-gpu");
   options.addArguments("--no-sandbox");
@@ -126,8 +126,8 @@ const crawlData = async () => {
       loopIndex++;
       if (rowIndex === companyPerPage - 1) {
         rowIndex = 0;
-        // currentPagination++;
-        currentPagination += 10;
+        currentPagination++;
+        // currentPagination += 10;
       } else {
         rowIndex++;
       }
@@ -188,7 +188,6 @@ const startCrawlDetail = async (driver, reportSent) => {
       reportSent,
       // reportTermId,
       unitedStatusId,
-      // reportDataDetails,
     };
 
     let secondReportData = { ...reportData };
@@ -200,17 +199,42 @@ const startCrawlDetail = async (driver, reportSent) => {
     let LCTTData = allTableData[tableOrderConst.LCTT - 1];
     let LCGTData = allTableData[tableOrderConst.LCGT - 1];
 
+    const fullReportDataDetails = [
+      ...BCDKTData,
+      ...KQKDData,
+      ...LCTTData,
+      ...LCGTData,
+    ];
+
+    let isValidReportData = true;
+    let allValuesAreZero = true;
+    for (const reportDataDetail of fullReportDataDetails) {
+      const { reportNormId, value } = reportDataDetail;
+      if (!reportNormId) {
+        isValidReportData = false;
+        break;
+      }
+      if (value) {
+        allValuesAreZero = false;
+      }
+    }
+
+    if (allValuesAreZero) {
+      isValidReportData = false;
+    }
+
+    if(!isValidReportData){
+      reportData.reportTermId = reportTermId;
+      await insertReportDataDraftToDb({ reportDataDraft: reportData });
+      return;
+    }
+
     if (
       reportTermId == reportTermIdConst.quy1 ||
       reportTermId == reportTermIdConst.banNien ||
       reportTermId == reportTermIdConst.nam
     ) {
-      reportData.reportDataDetails = [
-        ...BCDKTData,
-        ...KQKDData,
-        ...LCTTData,
-        ...LCGTData,
-      ];
+      reportData.reportDataDetails = fullReportDataDetails;
     }
 
     if (
@@ -234,10 +258,10 @@ const startCrawlDetail = async (driver, reportSent) => {
           break;
         default:
       }
-      await insertReport({ reportData: secondReportData });
+      await insertReportToDb({ reportData: secondReportData });
     }
 
-    await insertReport({ reportData });
+    await insertReportToDb({ reportData });
 
     // await writeToFile({
     //   content: JSON.stringify(reportData),

@@ -2,39 +2,39 @@ const db = require("../models");
 const _ = require("lodash");
 const { formatDate, now } = require("../shared/utils");
 
-const insertReport = async ({ reportData }) => {
-  let { reportDataDetails = [] } = reportData;
+// const insertReport = async ({ reportData }) => {
+//   let { reportDataDetails = [] } = reportData;
 
-  // reportData.reportDate = formatDate({ dateStr: reportData.reportDate });
-  try {
-    let isValidReportData = true;
-    let allValuesAreZero = true;
-    for (const reportDataDetail of reportDataDetails) {
-      const { reportNormId, value } = reportDataDetail;
-      if (!reportNormId) {
-        isValidReportData = false;
-        break;
-      }
-      if (value) {
-        allValuesAreZero = false;
-      }
-    }
+//   // reportData.reportDate = formatDate({ dateStr: reportData.reportDate });
+//   try {
+//     let isValidReportData = true;
+//     let allValuesAreZero = true;
+//     for (const reportDataDetail of reportDataDetails) {
+//       const { reportNormId, value } = reportDataDetail;
+//       if (!reportNormId) {
+//         isValidReportData = false;
+//         break;
+//       }
+//       if (value) {
+//         allValuesAreZero = false;
+//       }
+//     }
 
-    if (allValuesAreZero) {
-      isValidReportData = false;
-    }
+//     if (allValuesAreZero) {
+//       isValidReportData = false;
+//     }
 
-    if (isValidReportData) {
-      await insertReportToDb({ reportData });
-    } else {
-      await insertReportDataDraftToDb({ reportDataDraft: reportData });
-    }
-  } catch (err) {
-    console.log("[Lỗi khi ghi dữ liệu vào database]:", err);
-  } finally {
-    return;
-  }
-};
+//     if (isValidReportData) {
+//       await insertReportToDb({ reportData });
+//     } else {
+//       await insertReportDataDraftToDb({ reportDataDraft: reportData });
+//     }
+//   } catch (err) {
+//     console.log("[Lỗi khi ghi dữ liệu vào database]:", err);
+//   } finally {
+//     return;
+//   }
+// };
 
 const insertReportToDb = async ({ reportData }) => {
   let {
@@ -140,7 +140,6 @@ const insertReportDataDraftToDb = async ({ reportDataDraft }) => {
     });
 
     if (!_.isEmpty(existedDraft)) {
-      await t.commit();
       throw new Error(`${now()}: Báo cáo Draft đã tồn tại trong đb`);
       return;
     }
@@ -162,6 +161,7 @@ const insertReportDataDraftToDb = async ({ reportDataDraft }) => {
 };
 
 module.exports = {
-  insertReport,
+  // insertReport,
   insertReportDataDraftToDb,
+  insertReportToDb
 };
