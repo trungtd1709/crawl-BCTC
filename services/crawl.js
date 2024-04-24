@@ -366,8 +366,8 @@ const getReportTitleInfo = async ({ driver, reportSent }) => {
     _.isEmpty(company) ||
     !yearPeriod ||
     !reportTermId ||
-    !auditStatusId ||
-    !unitedStatusId
+    auditStatusId == null ||
+    unitedStatusId == null
   ) {
     const reportDataDraft = {
       businessPermit,

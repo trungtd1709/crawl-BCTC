@@ -90,6 +90,14 @@ const insertReportToDb = async ({ reportData }) => {
       }
       //   await db.ReportData.update({}, { transaction: t });
     } else {
+      const { reportDataDetails } = reportData;
+      const filteredReportDataDetails = _.filter(
+        reportDataDetails,
+        (obj) => obj.value != 0
+      );
+
+      reportData.reportDataDetails = filteredReportDataDetails;
+
       const newReport = await db.ReportData.create(reportData, {
         include: [{ model: db.ReportDataDetail, as: "reportDataDetails" }],
         transaction: t,
@@ -116,7 +124,7 @@ const insertReportDataDraftToDb = async ({ reportDataDraft }) => {
       auditStatusId,
       isAdjusted,
       unitedStatusId,
-      reportDataDetails
+      reportDataDetails,
     } = reportDataDraft;
 
     const existedDraft = await db.ReportDataDraft.findOne({
