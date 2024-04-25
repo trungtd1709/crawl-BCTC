@@ -124,7 +124,7 @@ const insertReportDataDraftToDb = async ({ reportDataDraft }) => {
       auditStatusId,
       isAdjusted,
       unitedStatusId,
-      reportDataDetails,
+      reportDataDetails = [],
     } = reportDataDraft;
 
     const existedDraft = await db.ReportDataDraft.findOne({
@@ -144,7 +144,9 @@ const insertReportDataDraftToDb = async ({ reportDataDraft }) => {
       return;
     }
 
-    reportDataDraft.reportDataDetailDrafts = reportDataDetails;
+    if (!_.isEmpty(reportDataDetails)) {
+      reportDataDraft.reportDataDetailDrafts = reportDataDetails;
+    }
 
     await db.ReportDataDraft.create(reportDataDraft, {
       include: [
@@ -163,5 +165,5 @@ const insertReportDataDraftToDb = async ({ reportDataDraft }) => {
 module.exports = {
   // insertReport,
   insertReportDataDraftToDb,
-  insertReportToDb
+  insertReportToDb,
 };

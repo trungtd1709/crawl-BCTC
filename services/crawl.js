@@ -225,7 +225,7 @@ const startCrawlDetail = async (driver, reportSent) => {
 
     if(!isValidReportData){
       reportData.reportTermId = reportTermId;
-      reportData.reportDataDetailDrafts = fullReportDataDetails;
+      reportData.reportDataDetails = fullReportDataDetails;
       await insertReportDataDraftToDb({ reportDataDraft: reportData });
       return;
     }
