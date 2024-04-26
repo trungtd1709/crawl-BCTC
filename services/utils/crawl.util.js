@@ -119,9 +119,31 @@ const getTableCode = ({ tableOrder }) => {
   return code;
 };
 
+const isValidReport = (fullReportDataDetails) => {
+  let isValidReportData = true;
+  let allValuesAreZero = true;
+  for (const reportDataDetail of fullReportDataDetails) {
+    const { reportNormId, value } = reportDataDetail;
+    if (!reportNormId && value > 0) {
+      isValidReportData = false;
+      break;
+    }
+    if (value) {
+      allValuesAreZero = false;
+    }
+  }
+
+  if (allValuesAreZero) {
+    isValidReportData = false;
+  }
+  return isValidReportData;
+};
+
 module.exports = {
   getReportTermType,
   getReportTermId,
   getAuditStatusId,
-  getUnitedStatusId,getTableCode
+  getUnitedStatusId,
+  getTableCode,
+  isValidReport,
 };

@@ -43,6 +43,7 @@ const {
   getAuditStatusId,
   getUnitedStatusId,
   getTableCode,
+  isValidReport,
 } = require("./utils/crawl.util.js");
 const {
   insertReportDataDraftToDb,
@@ -206,22 +207,7 @@ const startCrawlDetail = async (driver, reportSent) => {
       ...LCGTData,
     ];
 
-    let isValidReportData = true;
-    let allValuesAreZero = true;
-    for (const reportDataDetail of fullReportDataDetails) {
-      const { reportNormId, value } = reportDataDetail;
-      if (!reportNormId) {
-        isValidReportData = false;
-        break;
-      }
-      if (value) {
-        allValuesAreZero = false;
-      }
-    }
-
-    if (allValuesAreZero) {
-      isValidReportData = false;
-    }
+    const isValidReportData = isValidReport(fullReportDataDetails)
 
     if(!isValidReportData){
       reportData.reportTermId = reportTermId;
