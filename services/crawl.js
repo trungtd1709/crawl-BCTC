@@ -66,81 +66,89 @@ const waitPageLoad = async (driver) => {
 };
 
 const crawlData = async () => {
-  let options = new chrome.Options().windowSize({ width: 1920, height: 1080 });
-  options.addArguments("--headless");
-  options.addArguments("--disable-gpu");
-  options.addArguments("--no-sandbox");
-  options.addArguments("--disable-dev-shm-usage");
+  try {
+    let options = new chrome.Options().windowSize({
+      width: 1920,
+      height: 1080,
+    });
+    options.addArguments("--headless");
+    options.addArguments("--disable-gpu");
+    options.addArguments("--no-sandbox");
+    options.addArguments("--disable-dev-shm-usage");
 
-  const driver = await new Builder()
-    .forBrowser("chrome")
-    .setChromeOptions(options)
-    .build();
-  const urlToCrawl = process.env.WEB_URL_TO_CRAWL;
-  let currentPagination = startPagination;
+    const driver = await new Builder()
+      .forBrowser("chrome")
+      .setChromeOptions(options)
+      .build();
+    const urlToCrawl = process.env.WEB_URL_TO_CRAWL;
+    let currentPagination = startPagination;
 
-  await driver.get(urlToCrawl);
-  await waitPageLoad(driver);
-  await delay(2);
-  const lastPagination = await findLastPagination({ driver });
+    await driver.get(urlToCrawl);
+    await waitPageLoad(driver);
+    await delay(2);
+    const lastPagination = await findLastPagination({ driver });
 
-  // const lastPagination = 2;
-  let rowIndex = 0;
-  let loopIndex = 1;
-  const companyPerPage = 15;
-  // await changeDateRange(driver, "10/10/2023", "05/11/2023");
-  while (rowIndex < companyPerPage && currentPagination <= lastPagination) {
-    try {
-      // <tr> là các thẻ chứa link báo cáo
-      if (currentPagination > 1) {
-        await changePagination(driver, currentPagination);
+    // const lastPagination = 2;
+    let rowIndex = 0;
+    let loopIndex = 1;
+    const companyPerPage = 15;
+    // await changeDateRange(driver, "10/10/2023", "05/11/2023");
+    while (rowIndex < companyPerPage && currentPagination <= lastPagination) {
+      try {
+        // <tr> là các thẻ chứa link báo cáo
+        if (currentPagination > 1) {
+          await changePagination(driver, currentPagination);
+          await waitPageLoad(driver);
+        }
+
+        await waitForElementVisibleByXPath(driver, "//*[@_afrrk]");
+        await delay(5);
+        const trElements = await driver.findElements(By.xpath("//*[@_afrrk]"));
+        // tìm thẻ <td> thứ 2 trong mảng, thẻ này chứa link báo cáo
+        const reportLinkElements = await trElements[rowIndex].findElements(
+          By.css("td")
+        );
+        await driver.wait(until.elementIsVisible(reportLinkElements[4]), 10000);
+        const reportSentStr = await reportLinkElements[4].getText();
+        let reportSent = null;
+        if (reportSentStr) {
+          reportSent = formatDate({
+            dateStr: reportSentStr,
+            originalDateFormat: "DD/MM/YYYY hh:mm:ss",
+            formattedDateFormat: "YYYY-MM-DD hh:mm:ss",
+          });
+        }
+        // Find and click the anchor element
+        await navigateToReportDetail(reportLinkElements[1]);
         await waitPageLoad(driver);
-      }
+        await delay(3);
+        await startCrawlDetail(driver, reportSent);
 
-      await waitForElementVisibleByXPath(driver, "//*[@_afrrk]");
-      await delay(5);
-      const trElements = await driver.findElements(By.xpath("//*[@_afrrk]"));
-      // tìm thẻ <td> thứ 2 trong mảng, thẻ này chứa link báo cáo
-      const reportLinkElements = await trElements[rowIndex].findElements(
-        By.css("td")
-      );
-      await driver.wait(until.elementIsVisible(reportLinkElements[4]), 10000);
-      const reportSentStr = await reportLinkElements[4].getText();
-      let reportSent = null;
-      if (reportSentStr) {
-        reportSent = formatDate({
-          dateStr: reportSentStr,
-          originalDateFormat: "DD/MM/YYYY hh:mm:ss",
-          formattedDateFormat: "YYYY-MM-DD hh:mm:ss",
-        });
+        // Navigate back and wait for the page to load
+        await driver.get(urlToCrawl);
+        await waitPageLoad(driver);
+        await delay(1);
+        loopIndex++;
+        if (rowIndex === companyPerPage - 1) {
+          rowIndex = 0;
+          currentPagination++;
+          // currentPagination += 10;
+        } else {
+          rowIndex++;
+        }
+        console.log("[STT]:", loopIndex);
+      } catch (err) {
+        console.error(now() + "- [Error]:" + err.message);
+        continue;
       }
-      // Find and click the anchor element
-      await navigateToReportDetail(reportLinkElements[1]);
-      await waitPageLoad(driver);
-      await delay(3);
-      await startCrawlDetail(driver, reportSent);
-
-      // Navigate back and wait for the page to load
-      await driver.get(urlToCrawl);
-      await waitPageLoad(driver);
-      await delay(1);
-      loopIndex++;
-      if (rowIndex === companyPerPage - 1) {
-        rowIndex = 0;
-        currentPagination++;
-        // currentPagination += 10;
-      } else {
-        rowIndex++;
-      }
-      console.log("[STT]:", loopIndex);
-    } catch (err) {
-      console.error(now() + "- [Error]:" + err.message);
-      continue;
     }
-  }
 
-  console.log(now(), " [FINISH CRAWLING, CLOSING BROWSER ...]");
-  await driver.quit();
+    console.log(now(), " [FINISH CRAWLING, CLOSING BROWSER ...]");
+  } catch (err) {
+    console.log(now() + " :" + err);
+  } finally {
+    await driver.quit();
+  }
 };
 
 const navigateToReportDetail = async (anchorContainerEl) => {
@@ -207,10 +215,9 @@ const startCrawlDetail = async (driver, reportSent) => {
       ...LCGTData,
     ];
 
-    const isValidReportData = isValidReport(fullReportDataDetails)
+    const isValidReportData = isValidReport(fullReportDataDetails);
 
-    if(!isValidReportData){
-      reportData.reportTermId = reportTermId;
+    if (!isValidReportData) {
       reportData.reportDataDetails = fullReportDataDetails;
       await insertReportDataDraftToDb({ reportDataDraft: reportData });
       return;
@@ -245,10 +252,18 @@ const startCrawlDetail = async (driver, reportSent) => {
           break;
         default:
       }
-      await insertReportToDb({ reportData: secondReportData });
+      if (isValidReportData) {
+        await insertReportToDb({ reportData: secondReportData });
+      } else {
+        await insertReportDataDraftToDb({ reportDataDraft: secondReportData });
+      }
     }
 
-    await insertReportToDb({ reportData });
+    if (isValidReportData) {
+      await insertReportToDb({ reportData });
+    } else {
+      await insertReportDataDraftToDb({ reportDataDraft: reportData });
+    }
 
     // await writeToFile({
     //   content: JSON.stringify(reportData),
