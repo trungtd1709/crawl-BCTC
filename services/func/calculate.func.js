@@ -5,13 +5,31 @@ const {
 } = require("../../database/reportUtils");
 const { reportTermIdConst } = require("../../shared/constant");
 const { filterLCTT, filterKQKD } = require("../utils/calculate.util");
+const db = require("../../models");
 
 const calculateLcttQuy2 = async ({
   reportDataQuy1,
   reportDataBanNien,
   reportDataQuy2,
+  whereParams,
 }) => {
   let reportDataDetailsQuy2 = [];
+
+  reportDataQuy1 =
+    reportDataQuy1 ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst.quy1 },
+    }));
+  reportDataQuy2 =
+    reportDataQuy2 ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst.quy2 },
+    }));
+  reportDataBanNien =
+    reportDataBanNien ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst.banNien },
+    }));
 
   const reportDetailsBanNien = filterLCTT(reportDataBanNien?.reportDataDetails);
   const reportDetailsQuy1 = filterLCTT(reportDataQuy1?.reportDataDetails);
@@ -65,8 +83,25 @@ const calculateKqkdBanNien = async ({
   reportDataQuy1,
   reportDataQuy2,
   reportDataBanNien,
+  whereParams,
 }) => {
   let reportDataDetailsBanNien = [];
+
+  reportDataQuy1 =
+    reportDataQuy1 ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst.quy1 },
+    }));
+  reportDataQuy2 =
+    reportDataQuy2 ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst.quy2 },
+    }));
+  reportDataBanNien =
+    reportDataBanNien ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst.banNien },
+    }));
 
   const reportDetailsQuy1 = filterKQKD(reportDataQuy1?.reportDataDetails);
   const reportDetailsQuy2 = filterKQKD(reportDataQuy2?.reportDataDetails);
@@ -120,8 +155,28 @@ const calculateLcttQuy3 = async ({
   reportDataQuy3,
   reportDataBanNien,
   reportData9Thang,
+  whereParams,
 }) => {
   let reportDataDetailsQuy3 = [];
+
+  reportDataQuy3 =
+    reportDataQuy3 ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst.quy3 },
+    }));
+  reportData9Thang =
+    reportData9Thang ??
+    (await db.ReportData.findOne({
+      where: {
+        ...whereParams,
+        reportTermId: reportTermIdConst["9thangDauNam"],
+      },
+    }));
+  reportDataBanNien =
+    reportDataBanNien ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst.banNien },
+    }));
 
   const reportDetailsBanNien = filterLCTT(reportDataBanNien?.reportDataDetails);
   const reportDetails9Thang = filterLCTT(reportData9Thang?.reportDataDetails);
@@ -176,8 +231,32 @@ const calculateKqkd9Thang = async ({
   reportDataQuy2,
   reportDataQuy3,
   reportData9Thang,
+  whereParams,
 }) => {
   let reportDataDetails9Thang = [];
+  reportDataQuy1 =
+    reportDataQuy1 ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst.quy1 },
+    }));
+  reportDataQuy2 =
+    reportDataQuy2 ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst.quy2 },
+    }));
+  reportDataQuy3 =
+    reportDataQuy3 ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst.quy3 },
+    }));
+  reportData9Thang =
+    reportData9Thang ??
+    (await db.ReportData.findOne({
+      where: {
+        ...whereParams,
+        reportTermId: reportTermIdConst["9thangDauNam"],
+      },
+    }));
 
   const reportDetailsQuy1 = filterKQKD(reportDataQuy1?.reportDataDetails);
   const reportDetailsQuy2 = filterKQKD(reportDataQuy2?.reportDataDetails);
@@ -241,8 +320,28 @@ const calculateLcttQuy4 = async ({
   reportData12Thang,
   reportData9Thang,
   reportDataQuy4,
+  whereParams,
 }) => {
   let reportDataDetailsQuy4 = [];
+
+  reportDataQuy4 =
+    reportDataQuy4 ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst.quy4 },
+    }));
+  reportData9Thang =
+    reportData9Thang ??
+    (await db.ReportData.findOne({
+      where: {
+        ...whereParams,
+        reportTermId: reportTermIdConst["9thangDauNam"],
+      },
+    }));
+  reportData12Thang =
+    reportData12Thang ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst["12thang"] },
+    }));
 
   const reportDetails12Thang = filterLCTT(reportData12Thang?.reportDataDetails);
   const reportDetails9Thang = filterLCTT(reportData9Thang?.reportDataDetails);
@@ -298,8 +397,35 @@ const calculateKqkd12Thang = async ({
   reportDataQuy3,
   reportDataQuy4,
   reportData12Thang,
+  whereParams,
 }) => {
   let reportDataDetails12Thang = [];
+
+  reportDataQuy1 =
+    reportDataQuy1 ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst.quy1 },
+    }));
+  reportDataQuy2 =
+    reportDataQuy2 ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst.quy2 },
+    }));
+  reportDataQuy3 =
+    reportDataQuy3 ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst.quy3 },
+    }));
+  reportDataQuy4 =
+    reportDataQuy4 ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst.quy4 },
+    }));
+  reportData12Thang =
+    reportData12Thang ??
+    (await db.ReportData.findOne({
+      where: { ...whereParams, reportTermId: reportTermIdConst["12thang"] },
+    }));
 
   const reportDetailsQuy1 = filterKQKD(reportDataQuy1?.reportDataDetails);
   const reportDetailsQuy2 = filterKQKD(reportDataQuy2?.reportDataDetails);
