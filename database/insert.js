@@ -67,6 +67,9 @@ const insertReportToDb = async ({ reportData }) => {
       console.log("[Báo cáo đã tồn tại trong database]");
       for await (const reportDataDetail of reportDataDetails) {
         const { reportNormId } = reportDataDetail;
+        if (!reportNormId) {
+          continue;
+        }
         const existedReportDetail = await db.ReportDataDetail.findOne({
           where: {
             reportDataId,
@@ -127,15 +130,17 @@ const insertReportDataDraftToDb = async ({ reportDataDraft }) => {
       reportDataDetails = [],
     } = reportDataDraft;
 
+    let whereParams = {
+      ...(businessPermit && { businessPermit }),
+      ...(reportTermId && { reportTermId }),
+      ...(yearPeriod && { yearPeriod }),
+      ...(auditStatusId && { auditStatusId }),
+      ...(isAdjusted && { isAdjusted }),
+      ...(unitedStatusId && { unitedStatusId }),
+    };
+
     const existedDraft = await db.ReportDataDraft.findOne({
-      where: {
-        businessPermit,
-        reportTermId,
-        yearPeriod,
-        auditStatusId,
-        isAdjusted,
-        unitedStatusId,
-      },
+      where: whereParams,
       transaction: t,
     });
 

@@ -215,7 +215,7 @@ const startCrawlDetail = async (driver, reportSent) => {
       ...LCGTData,
     ];
 
-    const isValidReportData = isValidReport(fullReportDataDetails);
+    const isValidReportData = isValidReport(reportData, fullReportDataDetails);
 
     if (!isValidReportData) {
       reportData.reportDataDetails = fullReportDataDetails;
@@ -388,28 +388,28 @@ const getReportTitleInfo = async ({ driver, reportSent }) => {
     });
 
   const company = await getCompanyByBusinessPermit({ businessPermit });
-  if (
-    _.isEmpty(company) ||
-    !yearPeriod ||
-    !reportTermId ||
-    auditStatusId == null ||
-    unitedStatusId == null
-  ) {
-    const reportDataDraft = {
-      businessPermit,
-      yearPeriod,
-      reportTermId,
-      auditStatusId,
-      isAdjusted,
-      unitedStatusId,
-      reportDate,
-      reportSent,
-    };
-    await insertReportDataDraftToDb({ reportDataDraft });
-    throw new Error(`${now()}: ReportData thiếu dữ liệu`);
-  }
+  // if (
+  //   _.isEmpty(company) ||
+  //   !yearPeriod ||
+  //   !reportTermId ||
+  //   auditStatusId == null ||
+  //   unitedStatusId == null
+  // ) {
+  //   const reportDataDraft = {
+  //     businessPermit,
+  //     yearPeriod,
+  //     reportTermId,
+  //     auditStatusId,
+  //     isAdjusted,
+  //     unitedStatusId,
+  //     reportDate,
+  //     reportSent,
+  //   };
+  //   await insertReportDataDraftToDb({ reportDataDraft });
+  //   throw new Error(`${now()}: ReportData thiếu dữ liệu`);
+  // }
 
-  const { stockCode, businessTypeId = 0 } = company;
+  const { stockCode, businessTypeId = businessTypeIdConst.CTCP } = company;
   const reportTemplateId = await getReportTemplateId({ businessTypeId });
 
   console.log(

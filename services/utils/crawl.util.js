@@ -119,7 +119,7 @@ const getTableCode = ({ tableOrder }) => {
   return code;
 };
 
-const isValidReport = (fullReportDataDetails) => {
+const isValidReport = (reportData, fullReportDataDetails) => {
   let isValidReportData = true;
   let allValuesAreZero = true;
   for (const reportDataDetail of fullReportDataDetails) {
@@ -134,6 +134,19 @@ const isValidReport = (fullReportDataDetails) => {
   }
 
   if (allValuesAreZero) {
+    isValidReportData = false;
+  }
+
+  const { yearPeriod, reportTermId, auditStatusId, unitedStatusId, stockCode } =
+    reportData;
+
+  if (
+    !stockCode ||
+    !yearPeriod ||
+    !reportTermId ||
+    auditStatusId == null ||
+    unitedStatusId == null
+  ) {
     isValidReportData = false;
   }
   return isValidReportData;

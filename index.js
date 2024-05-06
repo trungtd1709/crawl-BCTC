@@ -11,7 +11,7 @@ const start = async () => {
   try {
     await connectDB();
     await syncDB();
-    // await inserReportXLSX();
+    await inserReportXLSX();
     await crawlData();
     // await calculate();
   } catch (err) {

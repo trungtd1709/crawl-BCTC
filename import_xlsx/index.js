@@ -113,13 +113,23 @@ const insertBusinessTypeIdToCompany = async () => {
   const t = await db.sequelize.transaction();
   try {
     // const newReportComponent = await db.ReportComponent.create(jsonData[0]);
+    // for await (const companyData of jsonData) {
+    //   const { businessPermit, stockCode, businessTypeId } = companyData;
+    //   // await db.Company.upsert({ businessPermit, businessTypeId }, { where });
+    //   await db.Company.upsert(
+    //     { businessPermit, businessTypeId },
+    //     {
+    //       where: { stockCode },
+    //     }
+    //   );
+    // }
     await db.Company.bulkCreate(jsonData, {
-      updateOnDuplicate: ["businessTypeId"],
+      updateOnDuplicate: ["businessPermit", "businessTypeId"],
       transaction: t,
     });
 
     await t.commit();
-    console.log("[INSERT BUSINESS TYPE ID SUCCESS]");
+    console.log("[INSERT businessTypeId, businessPermit SUCCESS]");
   } catch (err) {
     await t.rollback();
     console.log("[ERR INSERT BUSINESS TYPE ID]:", err);
