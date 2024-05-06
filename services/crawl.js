@@ -564,6 +564,7 @@ const getDetailTableData = async ({
         case 1:
           const publishNormCodeEl = await dataEl.findElement(By.css("span"));
           publishNormCode = await publishNormCodeEl.getText();
+          publishNormCode = publishNormCode.replace(/\./g, '');
           if (!publishNormCode) {
             continue outerLoop;
           }
