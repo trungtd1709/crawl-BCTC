@@ -1,4 +1,4 @@
-const startPagination = 635;
+const startPagination = 303;
 
 const idButtonChangeTab2 = "pt2:KQKD::ti";
 const idButtonChangeTab3 = "pt2:LCTT-TT::ti";

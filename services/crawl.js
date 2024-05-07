@@ -71,10 +71,10 @@ const crawlData = async () => {
       width: 1920,
       height: 1080,
     });
-    options.addArguments("--headless");
-    options.addArguments("--disable-gpu");
-    options.addArguments("--no-sandbox");
-    options.addArguments("--disable-dev-shm-usage");
+    // options.addArguments("--headless");
+    // options.addArguments("--disable-gpu");
+    // options.addArguments("--no-sandbox");
+    // options.addArguments("--disable-dev-shm-usage");
 
     const driver = await new Builder()
       .forBrowser("chrome")
@@ -89,7 +89,7 @@ const crawlData = async () => {
     const lastPagination = await findLastPagination({ driver });
 
     // const lastPagination = 2;
-    let rowIndex = 0;
+    let rowIndex = 5;
     let loopIndex = 1;
     const companyPerPage = 15;
     // await changeDateRange(driver, "10/10/2023", "05/11/2023");
@@ -564,7 +564,7 @@ const getDetailTableData = async ({
         case 1:
           const publishNormCodeEl = await dataEl.findElement(By.css("span"));
           publishNormCode = await publishNormCodeEl.getText();
-          publishNormCode = publishNormCode.replace(/\./g, '');
+          // publishNormCode = publishNormCode.replace(/\./g, '');
           if (!publishNormCode) {
             continue outerLoop;
           }
