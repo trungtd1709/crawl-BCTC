@@ -89,7 +89,7 @@ const crawlData = async () => {
     const lastPagination = await findLastPagination({ driver });
 
     // const lastPagination = 2;
-    let rowIndex = 5;
+    let rowIndex = 0;
     let loopIndex = 1;
     const companyPerPage = 15;
     // await changeDateRange(driver, "10/10/2023", "05/11/2023");
