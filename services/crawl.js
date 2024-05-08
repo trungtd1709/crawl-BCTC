@@ -90,7 +90,7 @@ const crawlData = async () => {
     const lastPagination = await findLastPagination({ driver });
 
     // const lastPagination = 2;
-    let rowIndex = 0;
+    let rowIndex = 11;
     let errCount = 0;
     let loopIndex = 1;
     const companyPerPage = 15;
@@ -223,11 +223,11 @@ const startCrawlDetail = async (driver, reportSent) => {
 
   const isValidReportData = isValidReport(reportData, fullReportDataDetails);
 
-  if (!isValidReportData) {
-    reportData.reportDataDetails = fullReportDataDetails;
-    await insertReportDataDraftToDb({ reportDataDraft: reportData });
-    return;
-  }
+  // if (!isValidReportData) {
+  //   reportData.reportDataDetails = fullReportDataDetails;
+  //   await insertReportDataDraftToDb({ reportDataDraft: reportData });
+  //   return;
+  // }
 
   if (
     reportTermId == reportTermIdConst.quy1 ||
