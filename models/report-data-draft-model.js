@@ -16,6 +16,8 @@ module.exports = sequelize => {
       },
       stockCode: DataTypes.STRING(16),
       businessPermit: DataTypes.STRING(16),
+      companyName: DataTypes.STRING(256),
+      reportName: DataTypes.STRING(256),
       reportTermId: DataTypes.INTEGER.UNSIGNED,
       auditStatusId: DataTypes.TINYINT,
       yearPeriod: DataTypes.INTEGER,

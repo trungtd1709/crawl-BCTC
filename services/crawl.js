@@ -75,6 +75,7 @@ const crawlData = async () => {
     options.addArguments("--disable-gpu");
     options.addArguments("--no-sandbox");
     options.addArguments("--disable-dev-shm-usage");
+    // let errCount = 0;
 
     const driver = await new Builder()
       .forBrowser("chrome")
@@ -90,10 +91,14 @@ const crawlData = async () => {
 
     // const lastPagination = 2;
     let rowIndex = 0;
+    let errCount = 0;
     let loopIndex = 1;
     const companyPerPage = 15;
     // await changeDateRange(driver, "10/10/2023", "05/11/2023");
     while (rowIndex < companyPerPage && currentPagination <= lastPagination) {
+      if (errCount >= 5) {
+        throw new Error(now() + ": Xảy ra lỗi với browser khi crawl");
+      }
       try {
         // <tr> là các thẻ chứa link báo cáo
         if (currentPagination > 1) {
@@ -138,6 +143,7 @@ const crawlData = async () => {
         }
         console.log("[STT]:", loopIndex);
       } catch (err) {
+        errCount++;
         console.error(now() + "- [Error]:" + err.message);
         continue;
       }
@@ -159,139 +165,139 @@ const navigateToReportDetail = async (anchorContainerEl) => {
 
 // Khi đã vào trang chi tiết gọi hàm này bắt đầu lấy dữ liệu
 const startCrawlDetail = async (driver, reportSent) => {
-  try {
-    const {
-      businessPermit,
-      companyName,
-      reportName,
-      stockCode,
+  // try {
+  const {
+    businessPermit,
+    companyName,
+    reportName,
+    stockCode,
+    reportTemplateId,
+    auditStatusId,
+    reportDate,
+    isAdjusted,
+    reportTermId,
+    unitedStatusId,
+    yearPeriod,
+    businessTypeId,
+  } = await getReportTitleInfo({ driver, reportSent });
+
+  let allTableData =
+    (await getAllTableData({
+      driver,
       reportTemplateId,
-      auditStatusId,
-      reportDate,
-      isAdjusted,
       reportTermId,
-      unitedStatusId,
-      yearPeriod,
       businessTypeId,
-    } = await getReportTitleInfo({ driver, reportSent });
+    })) ?? [];
 
-    let allTableData =
-      (await getAllTableData({
-        driver,
-        reportTemplateId,
-        reportTermId,
-        businessTypeId,
-      })) ?? [];
+  // một trang báo cáo trên CBTT phải chia làm 2 report data với termId khác nhau
+  let reportData = {
+    businessPermit,
+    stockCode,
+    companyName,
+    reportName,
+    yearPeriod,
+    reportTemplateId,
+    auditStatusId,
+    reportDate,
+    isAdjusted,
+    reportSent,
+    // reportTermId,
+    unitedStatusId,
+  };
 
-    // một trang báo cáo trên CBTT phải chia làm 2 report data với termId khác nhau
-    let reportData = {
-      businessPermit,
-      stockCode,
-      companyName,
-      reportName,
-      yearPeriod,
-      reportTemplateId,
-      auditStatusId,
-      reportDate,
-      isAdjusted,
-      reportSent,
-      // reportTermId,
-      unitedStatusId,
-    };
+  let secondReportData = { ...reportData };
 
-    let secondReportData = { ...reportData };
+  reportData.reportTermId = reportTermId;
 
-    reportData.reportTermId = reportTermId;
+  let BCDKTData = allTableData[tableOrderConst.BCDKT - 1];
+  let KQKDData = allTableData[tableOrderConst.KQKD - 1];
+  let LCTTData = allTableData[tableOrderConst.LCTT - 1];
+  let LCGTData = allTableData[tableOrderConst.LCGT - 1];
 
-    let BCDKTData = allTableData[tableOrderConst.BCDKT - 1];
-    let KQKDData = allTableData[tableOrderConst.KQKD - 1];
-    let LCTTData = allTableData[tableOrderConst.LCTT - 1];
-    let LCGTData = allTableData[tableOrderConst.LCGT - 1];
+  const fullReportDataDetails = [
+    ...BCDKTData,
+    ...KQKDData,
+    ...LCTTData,
+    ...LCGTData,
+  ];
 
-    const fullReportDataDetails = [
-      ...BCDKTData,
-      ...KQKDData,
-      ...LCTTData,
-      ...LCGTData,
-    ];
+  const isValidReportData = isValidReport(reportData, fullReportDataDetails);
 
-    const isValidReportData = isValidReport(reportData, fullReportDataDetails);
-
-    if (!isValidReportData) {
-      reportData.reportDataDetails = fullReportDataDetails;
-      await insertReportDataDraftToDb({ reportDataDraft: reportData });
-      return;
-    }
-
-    if (
-      reportTermId == reportTermIdConst.quy1 ||
-      reportTermId == reportTermIdConst.banNien ||
-      reportTermId == reportTermIdConst.nam
-    ) {
-      reportData.reportDataDetails = fullReportDataDetails;
-    }
-
-    if (
-      reportTermId == reportTermIdConst.quy2 ||
-      reportTermId == reportTermIdConst.quy3 ||
-      reportTermId == reportTermIdConst.quy4
-    ) {
-      reportData.reportDataDetails = [...BCDKTData, ...KQKDData];
-
-      secondReportData.reportDataDetails = [...LCTTData, ...LCGTData];
-
-      switch (reportTermId) {
-        case reportTermIdConst.quy2:
-          secondReportData.reportTermId = reportTermIdConst.banNien;
-          break;
-        case reportTermIdConst.quy3:
-          secondReportData.reportTermId = reportTermIdConst["9thangDauNam"];
-          break;
-        case reportTermIdConst.quy4:
-          secondReportData.reportTermId = reportTermIdConst["12thang"];
-          break;
-        default:
-      }
-      if (isValidReportData) {
-        await insertReportToDb({ reportData: secondReportData });
-      } else {
-        await insertReportDataDraftToDb({ reportDataDraft: secondReportData });
-      }
-    }
-
-    if (isValidReportData) {
-      await insertReportToDb({ reportData });
-    } else {
-      await insertReportDataDraftToDb({ reportDataDraft: reportData });
-    }
-
-    // await writeToFile({
-    //   content: JSON.stringify(reportData),
-    //   filename: "result.txt",
-    // });
-
-    console.log(
-      now() +
-        "[CRAWL SUCCESS]:" +
-        "\n" +
-        "[businessPermit]:" +
-        businessPermit +
-        "\n" +
-        "[stockCode]:" +
-        stockCode +
-        "\n" +
-        "[companyName]:" +
-        companyName +
-        "\n" +
-        "[reportName]:" +
-        reportName
-    );
-    // console.log(now() + "[crawledData]:", crawlData);
-    return;
-  } catch (err) {
-    console.log(now() + " - [ERROR]: " + err);
+  if (!isValidReportData) {
+    reportData.reportDataDetails = fullReportDataDetails;
+    await insertReportDataDraftToDb({ reportDataDraft: reportData });
     return;
   }
+
+  if (
+    reportTermId == reportTermIdConst.quy1 ||
+    reportTermId == reportTermIdConst.banNien ||
+    reportTermId == reportTermIdConst.nam
+  ) {
+    reportData.reportDataDetails = fullReportDataDetails;
+  }
+
+  if (
+    reportTermId == reportTermIdConst.quy2 ||
+    reportTermId == reportTermIdConst.quy3 ||
+    reportTermId == reportTermIdConst.quy4
+  ) {
+    reportData.reportDataDetails = [...BCDKTData, ...KQKDData];
+
+    secondReportData.reportDataDetails = [...LCTTData, ...LCGTData];
+
+    switch (reportTermId) {
+      case reportTermIdConst.quy2:
+        secondReportData.reportTermId = reportTermIdConst.banNien;
+        break;
+      case reportTermIdConst.quy3:
+        secondReportData.reportTermId = reportTermIdConst["9thangDauNam"];
+        break;
+      case reportTermIdConst.quy4:
+        secondReportData.reportTermId = reportTermIdConst["12thang"];
+        break;
+      default:
+    }
+    if (isValidReportData) {
+      await insertReportToDb({ reportData: secondReportData });
+    } else {
+      await insertReportDataDraftToDb({ reportDataDraft: secondReportData });
+    }
+  }
+
+  if (isValidReportData) {
+    await insertReportToDb({ reportData });
+  } else {
+    await insertReportDataDraftToDb({ reportDataDraft: reportData });
+  }
+
+  // await writeToFile({
+  //   content: JSON.stringify(reportData),
+  //   filename: "result.txt",
+  // });
+
+  console.log(
+    now() +
+      "[CRAWL SUCCESS]:" +
+      "\n" +
+      "[businessPermit]:" +
+      businessPermit +
+      "\n" +
+      "[stockCode]:" +
+      stockCode +
+      "\n" +
+      "[companyName]:" +
+      companyName +
+      "\n" +
+      "[reportName]:" +
+      reportName
+  );
+  // console.log(now() + "[crawledData]:", crawlData);
+  return;
+  // } catch (err) {
+  //   console.log(now() + " - [ERROR]: " + err);
+  //   return;
+  // }
 };
 
 const getAllTableData = async ({
