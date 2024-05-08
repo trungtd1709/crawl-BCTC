@@ -66,21 +66,21 @@ const waitPageLoad = async (driver) => {
 };
 
 const crawlData = async () => {
-  try {
-    let options = new chrome.Options().windowSize({
-      width: 1920,
-      height: 1080,
-    });
-    options.addArguments("--headless");
-    options.addArguments("--disable-gpu");
-    options.addArguments("--no-sandbox");
-    options.addArguments("--disable-dev-shm-usage");
-    // let errCount = 0;
+  let options = new chrome.Options().windowSize({
+    width: 1920,
+    height: 1080,
+  });
+  options.addArguments("--headless");
+  options.addArguments("--disable-gpu");
+  options.addArguments("--no-sandbox");
+  options.addArguments("--disable-dev-shm-usage");
+  // let errCount = 0;
 
-    const driver = await new Builder()
-      .forBrowser("chrome")
-      .setChromeOptions(options)
-      .build();
+  const driver = await new Builder()
+    .forBrowser("chrome")
+    .setChromeOptions(options)
+    .build();
+  try {
     const urlToCrawl = process.env.WEB_URL_TO_CRAWL;
     let currentPagination = startPagination;
 
@@ -90,7 +90,7 @@ const crawlData = async () => {
     const lastPagination = await findLastPagination({ driver });
 
     // const lastPagination = 2;
-    let rowIndex = 0;
+    let x = 0;
     let errCount = 0;
     let loopIndex = 1;
     const companyPerPage = 15;
