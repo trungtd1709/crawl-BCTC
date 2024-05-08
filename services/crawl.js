@@ -90,7 +90,7 @@ const crawlData = async () => {
     const lastPagination = await findLastPagination({ driver });
 
     // const lastPagination = 2;
-    let rowIndex = 11;
+    let rowIndex = 0;
     let errCount = 0;
     let loopIndex = 1;
     const companyPerPage = 15;
