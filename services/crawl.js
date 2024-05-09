@@ -91,6 +91,7 @@ const crawlData = async () => {
 
     // const lastPagination = 2;
     let x = 0;
+    let rowIndex = 0;
     let errCount = 0;
     let loopIndex = 1;
     const companyPerPage = 15;
