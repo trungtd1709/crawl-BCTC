@@ -70,10 +70,10 @@ const crawlData = async () => {
     width: 1920,
     height: 1080,
   });
-  options.addArguments("--headless");
-  options.addArguments("--disable-gpu");
-  options.addArguments("--no-sandbox");
-  options.addArguments("--disable-dev-shm-usage");
+  // options.addArguments("--headless");
+  // options.addArguments("--disable-gpu");
+  // options.addArguments("--no-sandbox");
+  // options.addArguments("--disable-dev-shm-usage");
   // let errCount = 0;
 
   const driver = await new Builder()
@@ -97,10 +97,11 @@ const crawlData = async () => {
     const companyPerPage = 15;
     // await changeDateRange(driver, "10/10/2023", "05/11/2023");
     while (rowIndex < companyPerPage && currentPagination <= lastPagination) {
-      if (errCount >= 5) {
-        throw new Error(now() + ": Xảy ra lỗi với browser khi crawl");
-      }
+      // if (errCount >= 5) {
+      //   throw new Error(now() + ": Xảy ra lỗi với browser khi crawl");
+      // }
       try {
+        await delay(5);
         // <tr> là các thẻ chứa link báo cáo
         if (currentPagination > 1) {
           await changePagination(driver, currentPagination);
@@ -108,7 +109,6 @@ const crawlData = async () => {
         }
 
         await waitForElementVisibleByXPath(driver, "//*[@_afrrk]");
-        await delay(5);
         const trElements = await driver.findElements(By.xpath("//*[@_afrrk]"));
         // tìm thẻ <td> thứ 2 trong mảng, thẻ này chứa link báo cáo
         const reportLinkElements = await trElements[rowIndex].findElements(
@@ -144,7 +144,7 @@ const crawlData = async () => {
         }
         console.log("[STT]:", loopIndex);
       } catch (err) {
-        errCount++;
+        // errCount++;
         console.error(now() + "- [Error]:" + err.message);
         continue;
       }
