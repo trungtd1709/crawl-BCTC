@@ -145,7 +145,13 @@ const crawlData = async () => {
         console.log("[STT]:", loopIndex);
       } catch (err) {
         // errCount++;
-        console.error(now() + "- [Error]:" + err.message);
+        console.error(now() + "- [Error]:" + err);
+        if (err.message.includes("Waiting for element")) {
+          rowIndex++;
+          await driver.get(urlToCrawl);
+          await waitPageLoad();
+          await delay(3);
+        }
         continue;
       }
     }
