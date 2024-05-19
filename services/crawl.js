@@ -70,10 +70,10 @@ const crawlData = async () => {
     width: 1920,
     height: 1080,
   });
-  options.addArguments("--headless");
-  options.addArguments("--disable-gpu");
-  options.addArguments("--no-sandbox");
-  options.addArguments("--disable-dev-shm-usage");
+  // options.addArguments("--headless");
+  // options.addArguments("--disable-gpu");
+  // options.addArguments("--no-sandbox");
+  // options.addArguments("--disable-dev-shm-usage");
   // let errCount = 0;
 
   const driver = await new Builder()
@@ -91,12 +91,13 @@ const crawlData = async () => {
 
     // const lastPagination = 2;
     let x = 0;
-    let rowIndex = 0;
+    let rowIndex = 14;
     let errCount = 0;
     let loopIndex = 1;
     const companyPerPage = 15;
     // await changeDateRange(driver, "10/10/2023", "05/11/2023");
-    while (rowIndex < companyPerPage && currentPagination <= lastPagination) {
+    // while (rowIndex < companyPerPage && currentPagination <= lastPagination) {
+    while (rowIndex < companyPerPage) {
       // if (errCount >= 5) {
       //   throw new Error(now() + ": Xảy ra lỗi với browser khi crawl");
       // }
@@ -147,7 +148,13 @@ const crawlData = async () => {
         // errCount++;
         console.error(now() + "- [Error]:" + err);
         if (err.message.includes("Waiting for element")) {
-          rowIndex++;
+          if (rowIndex === companyPerPage - 1) {
+            rowIndex = 0;
+            currentPagination++;
+            // currentPagination += 10;
+          } else {
+            rowIndex++;
+          }
           await driver.get(urlToCrawl);
           await waitPageLoad();
           await delay(3);
@@ -157,6 +164,7 @@ const crawlData = async () => {
     }
 
     console.log(now(), " [FINISH CRAWLING, CLOSING BROWSER ...]");
+    await driver.quit();
   } catch (err) {
     console.log(now() + " :" + err);
   } finally {
