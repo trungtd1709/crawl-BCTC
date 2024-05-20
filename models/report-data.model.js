@@ -1,13 +1,13 @@
-const { DataTypes, Sequelize } = require('sequelize');
+const { DataTypes, Sequelize } = require("sequelize");
 
 /**
  *
  * @param {Sequelize} sequelize
  * @returns
  */
-module.exports = sequelize => {
+module.exports = (sequelize) => {
   const ReportData = sequelize.define(
-    'reportDatas',
+    "reportDatas",
     {
       reportDataId: {
         type: DataTypes.INTEGER.UNSIGNED,
@@ -35,18 +35,18 @@ module.exports = sequelize => {
       timestamps: false,
       indexes: [
         {
-          name: 'stockCode',
+          name: "stockCode",
           fields: [
-            'stockCode',
-            'reportTermId',
-            'yearPeriod',
-            'auditStatusId',
-            'unitedStatusId',
+            "stockCode",
+            "reportTermId",
+            "yearPeriod",
+            "auditStatusId",
+            "unitedStatusId",
           ],
           unique: true,
         },
       ],
-    },
+    }
   );
   return ReportData;
 };

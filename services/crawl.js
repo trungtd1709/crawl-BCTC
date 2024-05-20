@@ -121,8 +121,8 @@ const crawlData = async () => {
         if (reportSentStr) {
           reportSent = formatDate({
             dateStr: reportSentStr,
-            originalDateFormat: "DD/MM/YYYY hh:mm:ss",
-            formattedDateFormat: "YYYY-MM-DD hh:mm:ss",
+            originalDateFormat: "DD/MM/YYYY HH:mm:ss",
+            formattedDateFormat: "YYYY-MM-DD HH:mm:ss",
           });
         }
         // Find and click the anchor element

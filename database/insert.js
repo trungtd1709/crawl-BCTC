@@ -139,6 +139,8 @@ const insertReportDataDraftToDb = async ({ reportDataDraft }) => {
       ...(unitedStatusId && { unitedStatusId }),
     };
 
+    reportDataDraft.lastUpdate = new Date();
+
     const existedDraft = await db.ReportDataDraft.findOne({
       where: whereParams,
       transaction: t,
